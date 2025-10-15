@@ -1,23 +1,32 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/getUser.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <title>웹 페이지</title>
-  <h1>회원정보 조회</h1>
+  <div class = "header">
+    <h1>회원정보 조회</h1>
+  </div>
 </head>
   <body>
-    <p>프로필 사진</p>
-    <img src = "image.jpg" alt="이미지">
-  <br></br>
-
+    <div class="profile-image">
+      <p>프로필 사진</p>
+      <img src = "image.jpg" alt="이미지">
+  </div>
+  <div class="input-box">
     <p>이메일</p>
-    <input type="text" placeholder="추후에 백엔드 연결"></input>
+    <p>kjs001004@naver.com</p>
+  </div>
+  
+  <div class="input-box">
+    <p>닉네임</p>
+    <p>haaland</p>
+    <button> 회원정보 수정 </button>
+  </div>
 
-<br></br>
-<p>닉네임</p>
-    <input type="text" placeholder="추후에 백엔드 연결"></input>
 
-<br></br>
-<button> 회원정보수정 </button>
+
   </body>
   
 </html>
