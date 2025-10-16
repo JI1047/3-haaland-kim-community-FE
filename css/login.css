@@ -7,6 +7,16 @@
   padding: 10px;
   text-align: center;  
 }
+.user-link{
+  position: absolute;
+  right: 40px;
+  gap: 10px;
+} 
+.header  img{
+  width: 100px;
+  height: 100px;
+
+}
 
 .input-box {
   text-align: left;
@@ -27,4 +37,10 @@
   font-size: 0.9em;
   margin-top: 4px;
   height: 16px; 
+
+}
+.divider{
+  height: 5px;
+  background-color: #888; 
+  margin: 20px 0; 
 }
