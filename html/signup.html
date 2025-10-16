@@ -5,32 +5,40 @@
   <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <title>웹 페이지</title>
-  <div class = "header">
-    <h1>회원가입</h1>
-  </div>
+        <script defer src="/javascript/signup.js"></script>
+
+  
 </head>
 <br>
 <br>
   <body>
+    <div class = "header">
+      <h1>회원가입</h1>
+    </div>
     <div class="profile-image">
       <p>프로필 사진</p>
       <img src = "image.jpg" alt="이미지">
   </div>
   <div class="input-box">
     <p>이메일</p>
-    <input type="text" placeholder="이메일을 입력하세요"></input> 
+    <input id="email" type="text" placeholder="이메일을 입력하세요"></input> 
+    <p id="emailError" class="errorMessage"></p> 
   </div>
   <div class="input-box">
     <p>비밀번호</p>
-    <input type="text" placeholder="비밀번호를 입력하세요"></input> 
+    <input id="password" type="text" placeholder="비밀번호를 입력하세요"></input> 
+    <p id="passwordError" class="errorMessage"></p> 
   </div>
   <div class="input-box">
     <p>비밀번호 확인</p>
-    <input type="text" placeholder="비밀번호를 한번 더 입력하세요"></input> 
+    <input id="confirmPassword" type="text" placeholder="비밀번호를 한번 더 입력하세요"></input> 
+    <p id="confirmPasswordError" class="errorMessage"></p> 
   </div>
   <div class="input-box">
     <p>닉네임</p>
-    <input type="text" placeholder="닉네임을 입력하세요"></input> 
+    <input id="nickname" type="text" placeholder="닉네임을 입력하세요"></input> 
+    <p id="nicknameError" class="errorMessage"></p> 
+
     <button> 회원가입 </button>
   </div>
 
