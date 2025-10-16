@@ -1,0 +1,88 @@
+.header {
+  display: flex;         
+  align-items: center;       
+  justify-content: center;    
+  gap: 40px;                  
+  font-size: 24px;
+  padding: 10px;
+  text-align: center;  
+}
+.header img{
+  margin-left: 40px;
+}
+.divider{
+  height: 5px;
+  background-color: #888; 
+  margin: 20px 0; 
+}
+.box1 {
+  margin-left: 300px;
+  padding: 1rem 1.5rem;         
+  margin: 2rem auto;            
+  max-width: 800px;             
+}
+
+.profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.profile img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+.profile p {
+
+  font-size: 0.9rem;
+}
+
+.postUpdate {
+  display: flex;
+  gap: 0.5rem;
+}
+.image-box {
+  width: 800px;
+  height: 400px;
+  border: 2px solid #ccc;
+  margin: 2rem auto;
+}
+.context-box {
+  text-align: left;
+  height: auto;
+  width: 800px;
+  margin: auto;
+
+}
+.view-box{
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  width: 800px;
+  margin: auto;
+
+}
+ .view {
+  width: 150px;
+  height: 100px;
+  background-color: #ddd;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.comment-box {
+  text-align: left;
+  height: auto;
+  width: 800px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;  
+  align-items: flex-end;    
+
+
+}
+.comment-box .submit {
+    align-self: flex-end;          
+
+}
