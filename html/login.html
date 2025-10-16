@@ -4,27 +4,30 @@
       <link rel="stylesheet" href="/css/login.css">
       <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+      <script defer src="/javascript/login.js"></script>
 
   <title>웹 페이지</title>
-  <div class = "header">
-    <h1>로그인</h1>
-  </div>
+  
 </head>
   <body>
+    <div class = "header">
+    <h1>로그인</h1>
+  </div>
     <div class="input-box">
       <p>이메일</p>
-      <input type="text" placeholder="이메일을 입력하세요"></input> 
+      <input id="email" type="text" placeholder="이메일을 입력하세요"></input>
+      <p id="emailError" class="errorMessage"></p> 
     </div>
   <br></br>
 
     <div class="input-box">
       <p>비밀번호</p>
-      <input type="text" placeholder="비밀번호를 입력하세요"></input> 
-      <button> 로그인 </button>
-  
+      <input id="password" type="text" placeholder="비밀번호를 입력하세요"></input> 
+      <p id="passwordError" class="errorMessage"></p> 
+      <button id="login" type="button">로그인</button>
     </div>
     <br>
-    <a class="singup">회원가입</a>
+    <a href ="signup.html" class="singup">회원가입</a>
 
 </body>
   

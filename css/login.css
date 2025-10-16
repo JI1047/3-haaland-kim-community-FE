@@ -22,3 +22,9 @@
     display: block;   
 
 }
+.errorMessage {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 4px;
+  height: 16px; 
+}
