@@ -10,6 +10,38 @@ document.getElementById("confirmPassword").addEventListener("input", (e) => {
   validateConfirmPassword(confirmPassword,password);
 });
 
+document.getElementById("updateButton").addEventListener("click", async() => {
+
+    const newPassword = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+
+
+    const requestBody = {
+        
+        newPassword,
+        confirmPassword
+    }
+    try{
+      const response = await fetch("http://127.0.0.1:8080/api/users/password", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody),
+      credentials : "include"
+    });
+
+    if (response.ok) {
+      alert("회원수정 성공!");
+      location.href = "/html/getUser.html";
+
+    } 
+  } catch (error) {
+    alert("서버 요청 중 오류가 발생했습니다.");
+  }
+});
+
 function validatePassword(password){
     const errorElement =document.getElementById("passwordError");
 
