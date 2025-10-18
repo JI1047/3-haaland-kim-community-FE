@@ -22,6 +22,39 @@ document.getElementById("nickname").addEventListener("input", (e) => {
   validateNickname(nickname);
 });
 
+document.getElementById("signupButton").addEventListener("click", async() => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const nickname = document.getElementById("nickname").value;
+    const profileImage = "www.s3.url"
+
+    const requestBody = {
+        email,
+        password,
+        confirmPassword,
+        nickname,
+        profileImage
+    }
+    try{
+      const response = await fetch("http://localhost:8080/api/users/sign-up", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (response.ok) {
+      alert("회원가입 성공!");
+    } 
+  } catch (error) {
+    alert("서버 요청 중 오류가 발생했습니다.");
+  }
+});
+
+
+
 function validateEmail(email){
     const errorElement =document.getElementById("emailError");
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -107,3 +140,4 @@ function validateConfirmPassword(confirmPassword,password){
     return true;
 
 }
+
