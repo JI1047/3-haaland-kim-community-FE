@@ -1,0 +1,33 @@
+.header {
+  display: flex;         
+  align-items: center;       
+  justify-content: center;    
+  gap: 40px;                  
+  font-size: 24px;
+  padding: 10px;
+  text-align: center;  
+}
+.user-link{
+  position: absolute;
+  right: 40px;
+  gap: 10px;
+} 
+.header  img{
+  width: 100px;
+  height: 100px;
+
+}
+.profile-image {
+  height: 200px;
+  width: 800px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;  
+  text-align: left;    
+}
+.profile-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: auto;
+}
