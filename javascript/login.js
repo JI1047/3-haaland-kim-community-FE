@@ -19,16 +19,17 @@ document.getElementById("loginButton").addEventListener("click", async() => {
 
     }
     try{
-      const response = await fetch("http://localhost:8080/api/users/login", {
+      const response = await fetch("http://127.0.0.1:8080/api/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify(requestBody),
+      credentials: "include" //쿠키 설정을 위해
     });
 
     if (response.ok) {
-      alert("로그인 성공!");
+      location.href = "/html/getUser.html";
     } 
   } catch (error) {
     alert("서버 요청 중 오류가 발생했습니다.");
