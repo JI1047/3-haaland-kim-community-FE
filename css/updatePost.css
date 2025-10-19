@@ -1,0 +1,47 @@
+.header {
+  display: flex;         
+  align-items: center;       
+  justify-content: center;    
+  gap: 40px;                  
+  font-size: 24px;
+  padding: 10px;
+  text-align: center;  
+}
+.user-link{
+  position: absolute;
+  right: 40px;
+  gap: 10px;
+} 
+.header  img{
+  width: 100px;
+  height: 100px;
+
+}
+
+
+.input-box {
+  width: 800px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;  
+  text-align: left;    
+
+
+}
+.input-box textarea {
+  height: 400px !important;
+  
+}
+
+.submit {
+    width: 150px;          
+  margin-top: 10px;      
+  align-self: flex-start; 
+
+}
+.errorMessage {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 4px;
+  height: 16px; 
+}
