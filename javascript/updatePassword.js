@@ -15,10 +15,7 @@ document.getElementById("updateButton").addEventListener("click", async() => {
     const newPassword = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
-
-
     const requestBody = {
-        
         newPassword,
         confirmPassword
     }

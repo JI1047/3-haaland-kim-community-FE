@@ -7,8 +7,15 @@
   padding: 10px;
   text-align: center;  
 }
-.header img{
-  margin-left: 40px;
+.user-link{
+  position: absolute;
+  right: 40px;
+  gap: 10px;
+} 
+.header  img{
+  width: 100px;
+  height: 100px;
+
 }
 .divider{
   height: 5px;
