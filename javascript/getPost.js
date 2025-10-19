@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("lookCount").textContent = data.lookCount;
     document.getElementById("commentCount").textContent = data.commentCount;
 
-     document.getElementById("updatePost").addEventListener("click", () => {
+     document.getElementById("updatePostButton").addEventListener("click", () => {
       location.href = `updatePost.html?id=${postId}`;
     });
   } catch (error) {
