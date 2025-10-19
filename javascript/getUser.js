@@ -1,3 +1,11 @@
+/**
+ *  회원정보 조회 시 fetch 연결 요청
+ * 1. 회원정보 조회 페이지에 접근했을 때 실행되는 fetch 요청
+ * 2. 현재 쿠키에 저장된 세션을 통해서 http://127.0.0.1:8080/api/users로 백엔드 GET요청을 보냄
+ * 3. 세션 쿠키를 포함하기 위헤 credentials: "include"로 설정
+ * 4. 서버로부터 받은 회원 정보를 HTML 요소(id=email, id=nickname)에 표시
+ * 5. 응답 오류 발생 시 경고창 또는 콘솔을 통해 오류 메시지를 표시
+ */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await fetch("http://127.0.0.1:8080/api/users", {
@@ -7,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!response.ok) {
       alert("로그인이 필요합니다.");
-    //   window.location.href = "/html/login.html";
+      location.href = "/html/login.html";
       return;
     }
 
