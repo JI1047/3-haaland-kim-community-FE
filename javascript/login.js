@@ -1,13 +1,33 @@
+/**
+ * 회원 가입시 이메일 입력 형식 검증 이벤트 리스너 
+ * 이메일을 입력했는지, '@','.'를 포함했는지 검증하는 과정
+ * 
+ */
 document.getElementById("email").addEventListener("input", (e) => {
   const email = e.target.value;
   validateEmail(email);
 });
 
+
+/**
+ * 회원 가입시 비밀번호 입력 형식 검증
+ * 비밀번호를 입력했는지, 비밀번호 길이 및 입력 형식 검증을 진행
+ */
 document.getElementById("password").addEventListener("input", (e) => {
   const password = e.target.value;
   validatePassword(password);
 });
 
+/**
+ * 로그인시 fetch 연결 메서드
+ * 1. loginButton이 눌렸을 때 실행되는 fetch 요청
+ * 2. email,password id를 통해서 찾고 변수에 저장
+ * 3. requestBody 객체를 통해서 한번에 요청하기 위해 설정
+ * 4. http://localhost:8080/api/users/login로 백엔드 POST요청을 보냄
+ * 5. 로그인 후 서버가 발급한 세션 쿠키를 포함하기 위헤 credentials: "include"로 설정
+ * 5. 응답이 성공적으로 왔을 경우 회원 정보 조회 페이지로 이동
+ * 6. 응답 중 오류가 발생했을 시 오류발생 메세지 반환
+ */
 document.getElementById("loginButton").addEventListener("click", async() => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -37,6 +57,7 @@ document.getElementById("loginButton").addEventListener("click", async() => {
 });
 
 
+//이메일 빛 비밀번호 검증 메서드는 회원가입과 동일
 function validateEmail(email){
     const errorElement =document.getElementById("emailError");
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
