@@ -8,14 +8,14 @@
  */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const response = await fetch("http://127.0.0.1:8080/api/users", {
+    const response = await fetch("http://localhost:8080/api/users", {
       method: "GET",
       credentials: "include"
     });
 
     if (!response.ok) {
       alert("로그인이 필요합니다.");
-      location.href = "/html/login.html";
+      // location.href = "/login";
       return;
     }
 
@@ -26,3 +26,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("에러:", error);
   }
 });
+
+function checkSessionCookie() {
+  if(document.cookie.includes('sessionID')){
+    return true;
+  }
+  else{
+    return false;
+  }
+}

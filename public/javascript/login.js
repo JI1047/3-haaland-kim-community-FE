@@ -39,7 +39,7 @@ document.getElementById("loginButton").addEventListener("click", async() => {
 
     }
     try{
-      const response = await fetch("http://127.0.0.1:8080/api/users/login", {
+      const response = await fetch("http://localhost:8080/api/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -49,7 +49,7 @@ document.getElementById("loginButton").addEventListener("click", async() => {
     });
 
     if (response.ok) {
-      location.href = "/html/getUser.html";
+      location.href = "/getUser";
     } 
   } catch (error) {
     alert("서버 요청 중 오류가 발생했습니다.");
