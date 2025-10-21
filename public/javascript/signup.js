@@ -90,6 +90,8 @@ document.getElementById("signupButton").addEventListener("click", async() => {
 
     if (response.ok) {
       alert("회원가입 성공!");
+      location.href = "/login";
+
     } 
   } catch (error) {
     alert("서버 요청 중 오류가 발생했습니다.");
