@@ -34,7 +34,7 @@ document.getElementById("createPostButton").addEventListener("click", async() =>
 
     }
     try{
-      const response = await fetch("http://127.0.0.1:8080/api/posts/create", {
+      const response = await fetch("http://localhost:8080/api/posts/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -45,7 +45,7 @@ document.getElementById("createPostButton").addEventListener("click", async() =>
 
     if (response.ok) {
       alert("게시물 생성 성공!");
-      location.href = "/html/getPostList.html";
+      location.href = "/getPostList";
 
     } 
   } catch (error) {
