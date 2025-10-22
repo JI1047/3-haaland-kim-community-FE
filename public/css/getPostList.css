@@ -31,3 +31,69 @@
   border-radius: 50%;
   margin: auto;
 }
+body {
+  font-family: "Noto Sans KR", sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#postList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 80%;
+  max-width: 700px;
+  margin-top: 20px;
+}
+
+.post-card {
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 16px 20px;
+  transition: all 0.2s ease-in-out;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.post-card h3 {
+  margin: 0;
+  color: #222;
+  font-size: 1.2rem;
+}
+
+.post-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* 로더 */
+#loader {
+  margin: 30px 0;
+  color: #888;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+#loader::after {
+  content: "⏳";
+  display: inline-block;
+  margin-left: 6px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

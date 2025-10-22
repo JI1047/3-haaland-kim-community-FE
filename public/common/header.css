@@ -1,0 +1,8 @@
+.user-link {
+  position: absolute;
+  right: 40px;
+  top: 20px; /* 선택사항: 상단 여백 */
+  display: flex;      /* 추가 */
+  align-items: center; /* 수직 정렬 */
+  gap: 10px;          /* 링크 간 간격 */
+}

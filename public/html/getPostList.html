@@ -4,10 +4,9 @@
       <link rel="stylesheet" href="../css/getPostList.css">
       <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-      <script defer src="../javascript/login.js"></script>
+      <script defer src="../javascript/getPostList.js"></script>
 
   <title>웹 페이지</title>
-  
 </head>
   <body>
     <div class = "header">
@@ -16,16 +15,22 @@
       </a>
         <img src = "../haaland.jpeg" alt="이미지">
         <div class="user-link">
-          <a href ="/updateUserProfile">회원정보수정</a>
-          <a href="/updateUserPassword">비밀번호 수정</a>
-          <a href="/login">로그인</a>
-          <a href="">로그아웃</a>
+          <a href="/getUser" id="user-info" hidden>회원정보 조회</a>
+          <a href="/updateUserProfile" id="update-profile" hidden>프로필 수정</a>
+          <a href="/logout" id="logout" hidden>로그아웃</a>
+          <a href="/login" id="login">로그인</a>
+          <a href="/signup" id="signup">회원가입</a>
         </div>
 
       </div>
     </div>
     <hr class = "divider">
     <a href="/createPost">게시글 작성</a>
+    <div id="postList" class="post-list"></div>
+  
+    <!-- 로딩 영역 -->
+    <div id="loader" class="loader">불러오는 중...</div>
+
   </body>
   
 </html>
