@@ -2,82 +2,78 @@
 <head>
   <meta charset="UTF-8">
   <title>웹 페이지</title>
-    <link rel="stylesheet" href="/css/getPost.css">
-
-    <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="/css/getPost.css">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <script defer src="/javascript/getPost.js"></script>
-
 </head>
-  <body>
-    <div class = "header">
-      <a href="/getpostList">
-        <h1>아무 말 커뮤니티</h1>
-      </a>        
-      <img src = "/haaland.jpeg" alt="이미지">
-        <div class="user-link">
-          <a href ="/getUser">회원정보 조회</a>
-          <a href="/updateUserPassword">비밀번호 수정</a>
-          <a href="">로그아웃</a>
+
+<body>
+  <div class="header">
+    <a href="/getpostList">
+      <h1>아무 말 커뮤니티</h1>
+    </a>
+    <img src="/haaland.jpeg" alt="이미지">
+    <div class="user-link">
+      <a href="/getUser">회원정보 조회</a>
+      <a href="/updateUserPassword">비밀번호 수정</a>
+      <a href="">로그아웃</a>
+    </div>
+  </div>
+  <hr class="divider">
+
+  <div class="box1">
+    <h2 class="title" id="title"></h2>
+    <div class="profile">
+      <div class="left">
+        <img src="/haaland.jpeg" alt="이미지">
+        <p id="createdUserNickName"></p>
+        <p id="createdAt"></p>
+      </div>
+      <div class="right">
+        <a href="#" id="updatePostButton">게시글 수정</a>
+        <a href="#" id="deletePostButton">게시글 삭제</a>
       </div>
     </div>
   </div>
-    <hr class = "divider">
-  <div class="box1">
-    <h2 class = "title" id="title"></h2>
 
-    <div class = "profile">
-    <div class="left">
-      <img src = "/haaland.jpeg" alt="이미지">
-        <p id="createdUserNickName"></p>
-        <p id="createdAt"></p>
-    </div>
-    <div class="right">
-        <button id="updatePostButton"> 수정 </button>
-        <button> 삭제 </button>
-    </div>  
-      
-    </div>
-  </div>
-  
-<hr class = "divider">
+  <hr class="divider">
 
   <div class="image-box">
-      <img src = "/haaland.jpeg" alt="이미지">
+    <img src="/haaland.jpeg" alt="이미지">
   </div>
-
 
   <div class="context-box">
     <p id="text"></p>
   </div>
+
   <div class="view-box">
-    <div class = "view">
+    <div class="view">
       좋아요 수
       <p id="likeCount"></p>
     </div>
-    <div class = "view">
+    <div class="view">
       조회 수
       <p id="lookCount"></p>
-
     </div>
-    <div class = "view">
+    <div class="view">
       댓글 수
       <p id="commentCount"></p>
-
     </div>
   </div>
 
+  <!-- ✅ 댓글 등록 -->
   <div class="comment-box">
-    <input type="text" placeholder="댓글을 남겨주세요!">
-    <button class="submit"> 댓글 등록 </button>
+    <input type="text" id="commentInput" placeholder="댓글을 남겨주세요!">
+    <button id="createCommentButton">댓글 등록</button>
   </div>
-  
-    
 
-
-  </body>
-  
+  <!-- ✅ 댓글 리스트 + 로딩 표시 -->
+  <div id="commentSection" style="width:800px; margin:auto; margin-top:20px;">
+    <h3>💬 댓글 목록</h3>
+    <div id="commentList"></div>
+    <div id="loader" style="text-align:center; display:none;">로딩 중...</div>
+  </div>
+</body>
 </html>
-    
-

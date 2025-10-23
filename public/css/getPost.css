@@ -93,3 +93,25 @@
     align-self: flex-end;          
 
 }
+/* 댓글 카드 스타일 */
+.comment-card {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-image {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.comment-body {
+  margin-top: 5px;
+  font-size: 0.95rem;
+}

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     postId = urlParam.get("id");
 
   try {
-    const response = await fetch(`http://127.0.0.1:8080/api/posts/${postId}`, {
+    const response = await fetch(`http://localhost:8080/api/posts/${postId}`, {
       method: "GET",
       credentials: "include"
     });
@@ -76,7 +76,7 @@ document.getElementById("updateButton").addEventListener("click", async() => {
         profileImage
     }
     try{
-      const response = await fetch(`http://127.0.0.1:8080/api/posts/${postId}/update`, {
+      const response = await fetch(`http://localhost:8080/api/posts/${postId}/update`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -87,7 +87,7 @@ document.getElementById("updateButton").addEventListener("click", async() => {
 
     if (response.ok) {
       alert("게시글 수정 성공!");
-      location.href = `/html/getPost.html?id=${postId}`;
+      location.href = `/getPost?id=${postId}`;
 
     } 
   } catch (error) {

@@ -18,6 +18,9 @@ function renderPosts(posts) {
         좋아요수: ${post.likeCount} 댓글 수: ${post.commentCount} 조회 수: ${post.lookCount}
       </div>
     `;
+    div.addEventListener("click", () => {
+      window.location.href = `/getPost?id=${post.postId}`;
+    });
     postList.appendChild(div);
   });
 }
@@ -26,14 +29,18 @@ function renderPosts(posts) {
 async function loadPosts() {
   if (isLoading || isLast) return;
   isLoading = true;
+  loader.style.display = "block";
+
 
   try {
     const res = await fetch(`http://localhost:8080/api/posts/list?page=${page}&size=${size}`);
     if (!res.ok) throw new Error("게시글 로드 실패");
 
     const data = await res.json();
+    console.log("✅ 응답 데이터:", data);
+
     renderPosts(data.posts);
-    isLast = data.hasMore; // hasMore=false면 마지막 페이지
+    isLast = !data.hasMore; // hasMore=false면 마지막 페이지
     page++;
 
     loader.textContent = isLast ? "마지막 페이지입니다" : "스크롤하면 더 불러옵니다";

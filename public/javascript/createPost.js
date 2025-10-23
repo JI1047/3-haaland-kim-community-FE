@@ -24,13 +24,13 @@ document.getElementById("createPostButton").addEventListener("click", async() =>
 
     const title = document.getElementById("title").value;
     const text = document.getElementById("text").value;
-    const profileImage = "www.s3.url"
+    const postImage = "www.s3.url"
 
     const requestBody = {
         
         title,
         text,
-        profileImage
+        postImage
 
     }
     try{

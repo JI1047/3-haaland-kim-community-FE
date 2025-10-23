@@ -37,3 +37,9 @@ app.get('/updateUserPassword',(req,res) =>{
 app.get('/getPostList',(req,res) =>{
     res.sendFile(path.join(__dirname, "public/html/getPostList.html"))
 })
+app.get('/getPost',(req,res) =>{
+    res.sendFile(path.join(__dirname, "public/html/getPost.html"))
+})
+app.get('/updatePost',(req,res) =>{
+    res.sendFile(path.join(__dirname, "public/html/updatePost.html"))
+})

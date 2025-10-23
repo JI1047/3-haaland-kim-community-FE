@@ -29,7 +29,7 @@ document.getElementById("updateButton").addEventListener("click", async() => {
         profileImage
     }
     try{
-      const response = await fetch("http://127.0.0.1:8080/api/users/profile", {
+      const response = await fetch("http://localhost:8080/api/users/profile", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -40,7 +40,7 @@ document.getElementById("updateButton").addEventListener("click", async() => {
 
     if (response.ok) {
       alert("회원수정 성공!");
-      location.href = "/html/getUser.html";
+      location.href = "/getUser";
 
     } 
   } catch (error) {
