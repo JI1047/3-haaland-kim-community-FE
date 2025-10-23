@@ -102,10 +102,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
       } else {
         alert(responseData.message || "회원가입 중 오류가 발생했습니다.");
       }
-    } else {
-      const text = await response.text();
-      alert("예상치 못한 응답 형식입니다. 콘솔을 확인하세요.");
-    }
+    } 
   } catch (error) {
     console.error("❌ 네트워크 오류 발생:", error);
     alert("서버 요청 중 오류가 발생했습니다.");

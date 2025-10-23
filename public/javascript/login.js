@@ -48,9 +48,19 @@ document.getElementById("loginButton").addEventListener("click", async() => {
       credentials: "include" //쿠키 설정을 위해
     });
 
-    if (response.ok) {
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      const responseData = await response.json();
+
+      if (response.ok) {
       location.href = "/getUser";
-    } 
+      } else {
+      alert(`${responseData.message || "로그인 중 오류가 발생했습니다."}`);
+    }
+    }
+    
+
   } catch (error) {
     alert("서버 요청 중 오류가 발생했습니다.");
   }
