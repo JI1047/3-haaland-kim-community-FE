@@ -65,35 +65,49 @@ document.getElementById("nickname").addEventListener("input", (e) => {
  * 4. 응답이 성공적으로 왔을 경우 회원가입 성공 메세지를 반환
  * 5. 응답 중 오류가 발생했을 시 오류발생 메세지 반환
  */
-document.getElementById("signupButton").addEventListener("click", async() => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    const nickname = document.getElementById("nickname").value;
-    const profileImage = "www.s3.url"
+document.getElementById("signupButton").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+  const nickname = document.getElementById("nickname").value;
+  const profileImage = "www.s3.url";
 
-    const requestBody = {
-        email,
-        password,
-        confirmPassword,
-        nickname,
-        profileImage
-    }
-    try{
-      const response = await fetch("http://localhost:8080/api/users/sign-up", {
+  const requestBody = {
+    email,
+    password,
+    confirmPassword,
+    nickname,
+    profileImage
+  };
+
+
+  try {
+    const response = await fetch("http://localhost:8080/api/users/sign-up", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
     });
 
-    if (response.ok) {
-      alert("회원가입 성공!");
-      location.href = "/login";
 
-    } 
+
+    const contentType = response.headers.get("content-type");
+
+    // ⚠️ JSON 형태인지 아닌지 먼저 확인
+    if (contentType && contentType.includes("application/json")) {
+      const responseData = await response.json();
+
+      if (response.ok) {
+        alert("회원가입 성공!");
+        location.href = "/login";
+      } else {
+        alert(responseData.message || "회원가입 중 오류가 발생했습니다.");
+      }
+    } else {
+      const text = await response.text();
+      alert("예상치 못한 응답 형식입니다. 콘솔을 확인하세요.");
+    }
   } catch (error) {
+    console.error("❌ 네트워크 오류 발생:", error);
     alert("서버 요청 중 오류가 발생했습니다.");
   }
 });

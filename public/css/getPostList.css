@@ -1,94 +1,142 @@
-.header {
-  display: flex;         
-  align-items: center;       
-  justify-content: center;    
-  gap: 40px;                  
-  font-size: 24px;
-  padding: 10px;
-  text-align: center;  
-}
-.user-link{
-  position: absolute;
-  right: 40px;
-  gap: 10px;
-} 
-.header  img{
-  width: 100px;
-  height: 100px;
-
-}
-.profile-image {
-  height: 200px;
-  width: 800px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;  
-  text-align: left;    
-}
-.profile-image img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: auto;
-}
+/* ✅ 전체 레이아웃 */
 body {
   font-family: "Noto Sans KR", sans-serif;
-  background: #fafafa;
+  background: linear-gradient(135deg, #d7e8ff 0%, #f5f9ff 100%);
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: #1e1e1e;
 }
 
+/* ✅ 헤더 영역 */
+.header {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+  padding: 20px 0;
+  position: relative; /* 버튼 절대 위치 기준 */
+  border-bottom: 2px solid rgba(255,255,255,0.4);
+  background-color: transparent;
+}
+
+/* 제목 중앙 */
+.header-title h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #114b8c;
+  margin: 0;
+  text-align: center;
+  border-bottom: 4px solid #7ab8ff;
+  padding-bottom: 5px;
+}
+
+/* 이미지 크기 축소 */
+.header img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  right: 240px; /* 버튼과 겹치지 않게 위치 조정 */
+}
+
+/* 로그인/회원가입 버튼 */
+.user-link {
+  position: absolute;
+  right: 40px;
+  display: flex;
+  gap: 15px;
+}
+
+.user-link a {
+  text-decoration: none;
+  color: #0a6cff;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-link a:hover {
+  background-color: #0a6cff;
+  color: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ 게시글 작성 버튼 */
+.write-btn {
+  margin-top: 30px;
+  font-size: 1.05rem;
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 30px;
+  padding: 10px 24px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.write-btn:hover {
+  background-color: #005fcc;
+  transform: translateY(-2px);
+}
+
+/* ✅ 게시글 리스트 */
 #postList {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  width: 80%;
-  max-width: 700px;
-  margin-top: 20px;
+  gap: 20px;
+  width: 90%;
+  max-width: 720px;
+  margin: 40px auto;
 }
 
+/* 게시글 카드 */
 .post-card {
-  width: 100%;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  padding: 16px 20px;
-  transition: all 0.2s ease-in-out;
+  background: white;
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease;
 }
 
 .post-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
 .post-card h3 {
-  margin: 0;
-  color: #222;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 8px;
 }
 
 .post-meta {
   font-size: 0.9rem;
   color: #666;
-  margin-top: 8px;
-  line-height: 1.4;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 8px;
 }
 
+/* 로더 */
 #loader {
-  height: 100px;            /* 👈 최소 높이 추가 */
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #888;
+  color: #114b8c;
   font-size: 0.95rem;
-  text-align: center;
-  margin: 30px 0;
 }
-
 
 #loader::after {
   content: "⏳";
