@@ -1,48 +1,47 @@
-<html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-      <link rel="stylesheet" href="/css/login.css">
-      <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-      <script defer src="/javascript/login.js"></script>
+  <title>아무 말 커뮤니티 - 로그인</title>
 
-  <title>웹 페이지</title>
+  <!-- ✅ 외부 스타일 -->
+  <link rel="stylesheet" href="/css/login.css">
   
+  <!-- ✅ JS 비동기 로드 -->
+  <script defer src="/javascript/login.js"></script>
 </head>
-  <body>
-    <div class = "header">
-      <a href="/getpostList">
-        <h1>아무 말 커뮤니티</h1>
-      </a>        
-      <img src = "/haaland.jpeg" alt="이미지">
-        <div class="user-link">
 
-      </div>
-    </div>
+<body>
+  <!-- ✅ 공통 헤더 -->
+  <div class="header">
+    <a href="/getpostList">
+      <h1>아무 말 커뮤니티</h1>
+    </a>        
+    <img src="/haaland.jpeg" alt="이미지">
+    <div class="user-link"></div>
   </div>
-    <hr class = "divider">
-    <div class = "header">
+
+  <hr class="divider">
+
+  <!-- ✅ 로그인 영역 -->
+  <div class="header">
     <h1>로그인</h1>
   </div>
-    <div class="input-box">
-      <p>이메일</p>
-      <input id="email" type="text" placeholder="이메일을 입력하세요"></input>
-      <p id="emailError" class="errorMessage"></p> 
-    </div>
-  <br></br>
 
-    <div class="input-box">
-      <p>비밀번호</p>
-      <input id="password" type="text" placeholder="비밀번호를 입력하세요"></input> 
-      <p id="passwordError" class="errorMessage"></p> 
-      <button id="loginButton" type="button">로그인</button>
-    </div>
-    <br>
-    <a href ="/signup" class="singup">회원가입</a>
-    <a href ="/getUser" >유저조회</a>
-    
+  <div class="input-box">
+    <p>이메일</p>
+    <input id="email" type="text" placeholder="이메일을 입력하세요">
+    <p id="emailError" class="errorMessage"></p> 
+  </div>
 
+  <div class="input-box">
+    <p>비밀번호</p>
+    <input id="password" type="password" placeholder="비밀번호를 입력하세요"> 
+    <p id="passwordError" class="errorMessage"></p> 
+    <button id="loginButton" type="button">로그인</button>
+  </div>
+
+  <div class="link-box">
+    <a href="/signup" class="signup">회원가입</a>
+  </div>
 </body>
-  
 </html>
-    
