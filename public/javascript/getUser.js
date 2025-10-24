@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const isLogin = document.cookie.includes("sessionID=");
 
-    document.getElementById("user-info").hidden = !isLogin;
-    document.getElementById("update-profile").hidden = !isLogin;
-    document.getElementById("logout").hidden = !isLogin;
+    // document.getElementById("user-info").hidden = !isLogin;
+    // document.getElementById("update-profile").hidden = !isLogin;
+    // document.getElementById("logout").hidden = !isLogin;
     document.getElementById("login").hidden = isLogin;
     document.getElementById("signup").hidden = isLogin;
     
