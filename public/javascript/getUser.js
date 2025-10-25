@@ -7,15 +7,7 @@
  * 5. 응답 오류 발생 시 경고창 또는 콘솔을 통해 오류 메시지를 표시
  */
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log(document.cookie);
-
-    const isLogin = document.cookie.includes("sessionID=");
-
-    // document.getElementById("user-info").hidden = !isLogin;
-    // document.getElementById("update-profile").hidden = !isLogin;
-    // document.getElementById("logout").hidden = !isLogin;
-    document.getElementById("login").hidden = isLogin;
-    document.getElementById("signup").hidden = isLogin;
+    
     
   try {
     const response = await fetch("http://localhost:8080/api/users", {
