@@ -10,36 +10,6 @@ body {
   color: #1e1e1e;
 }
 
-/* 헤더 */
-.header {
-  display: flex;         
-  align-items: center;       
-  justify-content: center;    
-  gap: 40px;                  
-  font-size: 24px;
-  padding: 10px;
-  text-align: center;  
-}
-
-.user-link {
-  position: absolute;
-  right: 40px;
-  gap: 10px;
-}
-
-.header img {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-}
-
-/* 구분선 */
-.divider {
-  height: 4px;
-  background-color: #b4c9ff; 
-  margin: 20px 0; 
-  border: none;
-}
 
 /* 입력박스 */
 .input-box {

@@ -2,24 +2,14 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="../css/getPostList.css">
+  <link rel="stylesheet" href="/css/header.css">  
   <script defer src="../javascript/getPostList.js"></script>
   <title>아무 말 커뮤니티</title>
+  <script defer src="/common/header.js"></script>
+
 </head>
 <body>
-  <div class="header">
-    <a href="/getpostList" class="header-title">
-      <h1>아무 말 커뮤니티</h1>
-    </a>
-    <img src="../haaland.jpeg" alt="이미지">
-    <div class="user-link">
-      <a href="/getUser" id="user-info" hidden>회원정보 조회</a>
-      <a href="/updateUserProfile" id="update-profile" hidden>프로필 수정</a>
-      <a href="/logout" id="logout" hidden>로그아웃</a>
-      <a href="/login" id="login">로그인</a>
-      <a href="/signup" id="signup">회원가입</a>
-    </div>
-  </div>
-
+  <div id="header"></div>
   <hr class="divider">
 
   <a href="/createPost" class="write-btn">게시글 작성</a>
