@@ -173,3 +173,74 @@ document.getElementById("createCommentButton").addEventListener("click", async (
     alert("서버 요청 중 오류가 발생했습니다.");
   }
 });
+/** 댓글 수정/삭제 버튼 이벤트 연결 */
+function attachCommentButtonEvents() {
+  // 🔹 삭제 버튼 이벤트
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      const commentId = e.target.dataset.id;
+
+      if (!confirm("정말 삭제하시겠습니까?")) return;
+
+      try {
+        const res =  await fetch(`http://localhost:8080/api/${postId}/comments/${commentId}`, {
+
+          method: "DELETE",
+          credentials: "include"
+        });
+
+        if (res.ok) {
+          alert("댓글이 삭제되었습니다.");
+          commentList.innerHTML = ""; // 초기화
+          commentPage = 0;
+          isCommentLast = false;
+          await loadComments(); // 새로 불러오기
+        } else {
+          alert("댓글 삭제 실패");
+        }
+      } catch (err) {
+        console.error("댓글 삭제 중 오류:", err);
+      }
+    });
+  });
+
+  // 🔹 수정 버튼 이벤트
+  document.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const commentId = e.target.dataset.id;
+      const commentCard = e.target.closest(".comment-card");
+      const body = commentCard.querySelector(".comment-body");
+      const oldText = body.textContent.trim();
+
+      const newText = prompt("수정할 내용을 입력하세요:", oldText);
+      if (newText && newText !== oldText) {
+        updateComment(commentId, newText);
+      }
+    });
+  });
+}
+
+/** 댓글 수정 요청 */
+async function updateComment(commentId, newText) {
+  try {
+    const res =  await fetch(`http://localhost:8080/api/${postId}/comments/${commentId}`, {
+
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: newText })
+    });
+
+    if (res.ok) {
+      alert("댓글이 수정되었습니다.");
+      commentList.innerHTML = "";
+      commentPage = 0;
+      isCommentLast = false;
+      await loadComments();
+    } else {
+      alert("수정 실패");
+    }
+  } catch (err) {
+    console.error("댓글 수정 중 오류:", err);
+  }
+}
