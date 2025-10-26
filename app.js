@@ -22,9 +22,14 @@ app.get('/createPost',(req,res) =>{
 app.get('/login',(req,res) =>{
     res.sendFile(path.join(__dirname, "public/html/login.html"))
 })
+//회원가입 눌럿을 시 thymeleaf페이지로 이동하도록 설정
 app.get('/signup',(req,res) =>{
-    res.sendFile(path.join(__dirname, "public/html/signup.html"))
+    res.redirect("http://localhost:8080/terms");
 })
+//thymeleaf페이지에서 다음 단계 이동시 정보 입력 페이지로 이동
+app.get('/signup-input', (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html/signup.html"));
+});
 app.get('/getUser',(req,res) =>{
     res.sendFile(path.join(__dirname, "public/html/getUser.html"))
 })

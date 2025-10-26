@@ -72,12 +72,27 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   const nickname = document.getElementById("nickname").value;
   const profileImage = "www.s3.url";
 
+  const cookies = document.cookie.split("; ").reduce((acc, current) => {
+  const [key, value] = current.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
+
+  let termsAgreement = null;
+  if (cookies.termsAgreement) {
+    termsAgreement = JSON.parse(decodeURIComponent(cookies.termsAgreement));
+    // LocalDateTime 파싱 호환용으로 "Z" 제거
+    if (termsAgreement.agreeTime) {
+      termsAgreement.agreeTime = termsAgreement.agreeTime.replace("Z", "");
+    }
+  }
   const requestBody = {
     email,
     password,
     confirmPassword,
     nickname,
-    profileImage
+    profileImage,
+    termsAgreement
   };
 
 
@@ -92,7 +107,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
 
     const contentType = response.headers.get("content-type");
 
-    // ⚠️ JSON 형태인지 아닌지 먼저 확인
+    //  JSON 형태인지 아닌지 먼저 확인
     if (contentType && contentType.includes("application/json")) {
       const responseData = await response.json();
 
@@ -104,7 +119,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
       }
     } 
   } catch (error) {
-    console.error("❌ 네트워크 오류 발생:", error);
+    console.error(" 네트워크 오류 발생:", error);
     alert("서버 요청 중 오류가 발생했습니다.");
   }
 });
