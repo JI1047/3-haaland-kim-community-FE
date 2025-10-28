@@ -71,9 +71,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// 🔹 게시물 삭제
 document.getElementById("deletePostButton").addEventListener("click", async () => {
   try {
+    // 1️⃣ 먼저 작성자 일치 여부 확인
+    const checkResponse = await fetch(`http://localhost:8080/api/posts/${postId}/check-writer`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    const checkData = await checkResponse.json().catch(() => null);
+
+    // 작성자 일치하지 않으면 즉시 종료
+    if (!checkResponse.ok || checkData?.match === false) {
+      alert(checkData?.message || "삭제 권한이 없습니다.");
+      return;
+    }
+
+    // 2️⃣ 일치하면 실제 삭제 요청 수행
     const response = await fetch(`http://localhost:8080/api/posts/${postId}/delete`, {
       method: "DELETE",
       credentials: "include"
@@ -83,9 +97,12 @@ document.getElementById("deletePostButton").addEventListener("click", async () =
       alert("게시물 삭제 성공!");
       location.href = "/getPostList";
     } else {
-      alert("삭제 실패");
+      const errorData = await response.json().catch(() => null);
+      alert(errorData?.message || "게시물 삭제 실패");
     }
+
   } catch (error) {
+    console.error("삭제 요청 중 오류:", error);
     alert("서버 요청 중 오류가 발생했습니다.");
   }
 });
