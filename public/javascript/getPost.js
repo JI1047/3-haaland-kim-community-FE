@@ -29,9 +29,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("lookCount").textContent = data.lookCount;
     document.getElementById("commentCount").textContent = data.commentCount;
 
-    document.getElementById("updatePostButton").addEventListener("click", () => {
-      location.href = `/updatePost?id=${postId}`;
+    document.getElementById("updatePostButton").addEventListener("click", async () => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/posts/${postId}/check-writer`, {
+      method: "GET",
+      credentials: "include"
     });
+
+    // ✅ 1. 서버 응답 파싱
+    const data = await response.json().catch(() => null);
+
+    // ✅ 2. 정상 (작성자 일치)
+    if (response.ok && data?.match === true) {
+      location.href = `/updatePost?id=${postId}`;
+      return;
+    }
+
+    // ❌ 3. 서버가 보낸 에러 메시지 표시
+    if (!response.ok) {
+      alert(data?.message || "수정 권한이 없습니다.");
+      return;
+    }
+
+    // ❌ 4. match === false (작성자 불일치)
+    if (data?.match === false) {
+      alert("이 게시글은 수정할 수 없습니다.");
+      return;
+    }
+
+  } catch (error) {
+    console.error("서버 요청 중 오류:", error);
+    alert("서버와의 연결 중 오류가 발생했습니다.");
+  }
+});
 
     // 🔹 게시물 로딩 완료 후 댓글 로드 시작
     initCommentSection();
