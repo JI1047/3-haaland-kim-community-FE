@@ -1,11 +1,16 @@
+import { jwtGuard } from "../common/jwt.js";
+(async () => {
+  try {
+    await jwtGuard(); // ✅ 로그인 안 된 사용자는 여기서 로그인 페이지로 리다이렉트됨
+  } catch (e) {
+    console.warn("인증 실패:", e.message);
+  }
+})();
 /**
  * 회원정보 수정 시 닉네임 입력 형식 검증 메서드
  * 닉네임을 입력했는지, 닉네임 길이 검증, 닉네임 띄어쓰기 포함 검증을 진행한다.
  */
-document.getElementById("nickname").addEventListener("input", (e) => {
-  const nickname = e.target.value;
-  validateNickname(nickname);
-});
+
 
 /**
  * 회원정보 수정 시 fetch 연결 메서드
@@ -18,34 +23,41 @@ document.getElementById("nickname").addEventListener("input", (e) => {
  * 5. 응답이 성공적으로 왔을 경우 회원 정보 조회 페이지로 이동
  * 6. 응답 중 오류가 발생했을 시 오류발생 메세지 반환
  */
-document.getElementById("updateButton").addEventListener("click", async() => {
+document.addEventListener("DOMContentLoaded", () => {
+  /** 닉네임 입력 검증 */
+  document.getElementById("nickname").addEventListener("input", (e) => {
+    const nickname = e.target.value;
+    validateNickname(nickname);
+  });
 
+  /** 회원정보 수정 요청 */
+  document.getElementById("updateButton").addEventListener("click", async () => {
     const nickname = document.getElementById("nickname").value;
-    const profileImage = "www.s3.url"
+    const profileImage = "www.s3.url";
 
-    const requestBody = {
-        
-        nickname,
-        profileImage
-    }
-    try{
+    const requestBody = { nickname, profileImage };
+
+    try {
       const response = await fetch("http://localhost:8080/api/users/profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody),
-      credentials : "include"
-    });
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+        credentials: "include",
+      });
 
-    if (response.ok) {
-      alert("회원수정 성공!");
-      location.href = "/getUser";
-
-    } 
-  } catch (error) {
-    alert("서버 요청 중 오류가 발생했습니다.");
-  }
+      if (response.ok) {
+        alert("회원수정 성공!");
+        location.href = "/getUser";
+      } else {
+        alert("회원수정 실패. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("서버 요청 중 오류 발생:", error);
+      alert("서버 요청 중 오류가 발생했습니다.");
+    }
+  });
 });
 
 //회원정보 수정 메서드는 회원가입과 동일

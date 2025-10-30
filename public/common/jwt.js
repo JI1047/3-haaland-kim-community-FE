@@ -33,7 +33,9 @@ export async function jwtGuard(redirectUrl = "/login") {
   const result = await checkJwt();
   if (!result.login) {
     alert("로그인이 필요합니다.");
-    window.location.href = redirectUrl;
+    setTimeout(() => {
+      window.location.href = redirectUrl;
+    }, 1000); // 0.3초 지연
     throw new Error("인증 실패");
   }
   return result.userId;
