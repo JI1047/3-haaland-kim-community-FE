@@ -9,7 +9,7 @@
  * - 세션 쿠키를 자동으로 포함 (credentials: "include")
  *
 */
-export async function checkSession() {
+export async function checkJwt() {
   try {
     const res = await fetch("http://localhost:8080/api/jwt/validate", {
       method: "GET",
@@ -27,6 +27,16 @@ export async function checkSession() {
     console.error("jwt 확인 중 오류:", error);
     return { login: false };
   }
+}
+
+export async function jwtGuard(redirectUrl = "/login") {
+  const result = await checkJwt();
+  if (!result.login) {
+    alert("로그인이 필요합니다.");
+    window.location.href = redirectUrl;
+    throw new Error("인증 실패");
+  }
+  return result.userId;
 }
 
 /** 로그아웃 처리 */

@@ -1,3 +1,11 @@
+import { jwtGuard } from "../common/jwt.js";
+(async () => {
+  try {
+    await jwtGuard(); // ✅ 로그인 안 된 사용자는 여기서 로그인 페이지로 리다이렉트됨
+  } catch (e) {
+    console.warn("인증 실패:", e.message);
+  }
+})();
 /**
  * 게시물 생성시 제목 입력 형식 검증 이벤트 리스너 
  *  제목 길이 검증

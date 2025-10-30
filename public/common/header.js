@@ -4,7 +4,7 @@
  * 세션 쿠키(sessionID)를 기준으로 로그인 여부에 따라 버튼 표시 변경
  */
 
-import { checkSession, logout } from "/common/session.js";//session.js import
+import { checkJwt, logout } from "/common/jwt.js";//session.js import
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    const session = await checkSession();//session.js의 checkSession함수를 통해 session 여부확인
+    const session = await checkJwt();//session.js의 checkSession함수를 통해 session 여부확인
 
     /**
      * session이 존재할 경우 로그인,회원가입 버튼 hidden처리
