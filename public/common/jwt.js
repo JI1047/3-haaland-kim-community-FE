@@ -11,7 +11,7 @@
 */
 export async function checkSession() {
   try {
-    const res = await fetch("http://localhost:8080/api/session/check", {
+    const res = await fetch("http://localhost:8080/api/jwt/validate", {
       method: "GET",
       credentials: "include"
     });
@@ -20,11 +20,11 @@ export async function checkSession() {
       const data = await res.json();
       return data;
     } else {
-      console.log("세션 없음");
+      console.log("jwt 없음");
       return { login: false };
     }
   } catch (error) {
-    console.error("세션 확인 중 오류:", error);
+    console.error("jwt 확인 중 오류:", error);
     return { login: false };
   }
 }

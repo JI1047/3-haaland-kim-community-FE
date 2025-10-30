@@ -214,7 +214,7 @@ document.getElementById("createCommentButton").addEventListener("click", async (
       document.getElementById("commentInput").value="";
       window.location.href = `/getPost?id=${postId}`;
     } else {
-      alert("삭제 실패");
+      alert("댓글 생성 실패");
     }
   } catch (error) {
     alert("서버 요청 중 오류가 발생했습니다.");
