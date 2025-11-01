@@ -4,6 +4,10 @@
  * 1) 게시물 작성자와 로그인한 사용자 검증
  * 2) 댓글 작성자와 로그인 한 사용자 검증
  */
+
+/**
+ * 게시물 작성자와 로그인한 사용자 일치 여부 검증
+ */
 export async function checkWriterPermission(postId) {
   const res = await fetch(
     `http://localhost:8080/api/posts/${postId}/check-writer`,
@@ -13,6 +17,9 @@ export async function checkWriterPermission(postId) {
   return { ok: res.ok, match: data?.match, message: data?.message };
 }
 
+/**
+ * 댓글 작성자와 로그인한 사용자 일치 여부 검증
+ */
 export async function checkCommentWriter(postId, commentId) {
   const res = await fetch(
     `http://localhost:8080/api/${postId}/comments/${commentId}/check-writer`,
