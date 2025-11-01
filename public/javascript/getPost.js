@@ -1,18 +1,22 @@
+import { initCommentSection } from "./commentRender.js";
+import { initGlobalEventDelegation } from "./commentEvent.js";
+
 let postId;
 
-/**
- * 게시물 상세 조회 및 댓글 인피니티 스크롤 통합 스크립트
- */
 document.addEventListener("DOMContentLoaded", async () => {
-
   const urlParam = new URLSearchParams(window.location.search);
   postId = urlParam.get("id");
 
-  // 🔹 게시물 상세 조회
+  await loadPostDetail();
+  initCommentSection(postId);
+  initGlobalEventDelegation(postId, () => initCommentSection(postId));
+});
+
+async function loadPostDetail() {
   try {
     const response = await fetch(`http://localhost:8080/api/posts/${postId}`, {
       method: "GET",
-      credentials: "include"
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -28,266 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("likeCount").textContent = data.likeCount;
     document.getElementById("lookCount").textContent = data.lookCount;
     document.getElementById("commentCount").textContent = data.commentCount;
-
-    document.getElementById("updatePostButton").addEventListener("click", async () => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/posts/${postId}/check-writer`, {
-      method: "GET",
-      credentials: "include"
-    });
-
-    // ✅ 1. 서버 응답 파싱
-    const data = await response.json().catch(() => null);
-
-    // ✅ 2. 정상 (작성자 일치)
-    if (response.ok && data?.match === true) {
-      location.href = `/updatePost?id=${postId}`;
-      return;
-    }
-
-    // ❌ 3. 서버가 보낸 에러 메시지 표시
-    if (!response.ok) {
-      alert(data?.message || "수정 권한이 없습니다.");
-      return;
-    }
-
-    // ❌ 4. match === false (작성자 불일치)
-    if (data?.match === false) {
-      alert("이 게시글은 수정할 수 없습니다.");
-      return;
-    }
-
   } catch (error) {
-    console.error("서버 요청 중 오류:", error);
-    alert("서버와의 연결 중 오류가 발생했습니다.");
-  }
-});
-
-    // 🔹 게시물 로딩 완료 후 댓글 로드 시작
-    initCommentSection();
-
-  } catch (error) {
-    console.error("에러:", error);
-  }
-});
-
-document.getElementById("deletePostButton").addEventListener("click", async () => {
-  try {
-    // 1️⃣ 먼저 작성자 일치 여부 확인
-    const checkResponse = await fetch(`http://localhost:8080/api/posts/${postId}/check-writer`, {
-      method: "GET",
-      credentials: "include"
-    });
-
-    const checkData = await checkResponse.json().catch(() => null);
-
-    // 작성자 일치하지 않으면 즉시 종료
-    if (!checkResponse.ok || checkData?.match === false) {
-      alert(checkData?.message || "삭제 권한이 없습니다.");
-      return;
-    }
-
-    // 2️⃣ 일치하면 실제 삭제 요청 수행
-    const response = await fetch(`http://localhost:8080/api/posts/${postId}/delete`, {
-      method: "DELETE",
-      credentials: "include"
-    });
-
-    if (response.ok) {
-      alert("게시물 삭제 성공!");
-      location.href = "/getPostList";
-    } else {
-      const errorData = await response.json().catch(() => null);
-      alert(errorData?.message || "게시물 삭제 실패");
-    }
-
-  } catch (error) {
-    console.error("삭제 요청 중 오류:", error);
-    alert("서버 요청 중 오류가 발생했습니다.");
-  }
-});
-
-/* -------------------------------------------------
- * ✅ 댓글 인피니티 스크롤 영역
- * -------------------------------------------------*/
-let commentPage = 0;
-let commentSize = 5;
-let isCommentLoading = false;
-let isCommentLast = false;
-
-const commentList = document.getElementById("commentList");
-const loader = document.getElementById("loader");
-
-/** 댓글 렌더링 함수 */
-function renderComments(comments) {
-  comments.forEach(comment => {
-    const div = document.createElement("div");
-    div.className = "comment-card";
-    div.innerHTML = `
-      <div class="comment-header">
-        <img src="${comment.profileImage || '/images/default-profile.png'}" 
-             alt="프로필" class="profile-image">
-        <b>${comment.nickname}</b>
-      </div>
-      <div class="comment-body">${comment.text}</div>
-      <div class="comment-actions">
-        <button class="edit-btn" data-id="${comment.commentId}">수정</button>
-        <button class="delete-btn" data-id="${comment.commentId}">삭제</button>
-      </div>
-      <hr>
-    `;
-    commentList.appendChild(div);
-  });
-
-  // 렌더링 후 이벤트 연결
-  attachCommentButtonEvents();
-}
-
-
-/** 댓글 불러오기 */
-async function loadComments() {
-  if (isCommentLoading || isCommentLast) return;
-  isCommentLoading = true;
-  loader.style.display = "block";
-
-  try {
-    const res = await fetch(`http://localhost:8080/api/${postId}/comments?page=${commentPage}&size=${commentSize}`, {
-      method: "GET",
-      credentials: "include"
-    });
-
-    if (!res.ok) throw new Error("댓글 로드 실패");
-    const data = await res.json();
-    console.log("✅ 응답 데이터:", data);
-
-
-    renderComments(data.comments); // ✅ DTO key 이름 맞춤
-    isCommentLast = data.last;
-    commentPage++;
-
-  } catch (error) {
-    console.error("댓글 로드 중 오류:", error);
-  } finally {
-    loader.style.display = "none";
-    isCommentLoading = false;
-  }
-}
-
-/** 스크롤 이벤트 감지 → 하단 도달 시 다음 페이지 로드 */
-function initCommentScroll() {
-  window.addEventListener("scroll", () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-      loadComments();
-    }
-  });
-}
-
-/** 댓글 초기화 함수 */
-function initCommentSection() {
-  commentPage = 0;
-  commentList.innerHTML = "";
-  isCommentLast = false;
-
-  loadComments(); // 첫 페이지 로드
-  initCommentScroll();
-}
-// 댓글 생성
-document.getElementById("createCommentButton").addEventListener("click", async () => {
-  const text = document.getElementById("commentInput").value.trim();
-
-  if(!text){
-    alert("댓글 내용을 입력해주세요!");
-    return;
-  }
-  try {
-    const response = await fetch(`http://localhost:8080/api/${postId}/comments`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ text })
-    });
-
-    if (response.ok) {
-      alert("댓글 생성 성공!");
-      document.getElementById("commentInput").value="";
-      window.location.href = `/getPost?id=${postId}`;
-    } else {
-      alert("댓글 생성 실패");
-    }
-  } catch (error) {
-    alert("서버 요청 중 오류가 발생했습니다.");
-  }
-});
-/** 댓글 수정/삭제 버튼 이벤트 연결 */
-function attachCommentButtonEvents() {
-  // 🔹 삭제 버튼 이벤트
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      const commentId = e.target.dataset.id;
-
-      if (!confirm("정말 삭제하시겠습니까?")) return;
-
-      try {
-        const res =  await fetch(`http://localhost:8080/api/${postId}/comments/${commentId}`, {
-
-          method: "DELETE",
-          credentials: "include"
-        });
-
-        if (res.ok) {
-          alert("댓글이 삭제되었습니다.");
-          commentList.innerHTML = ""; // 초기화
-          commentPage = 0;
-          isCommentLast = false;
-          await loadComments(); // 새로 불러오기
-        } else {
-          alert("댓글 삭제 실패");
-        }
-      } catch (err) {
-        console.error("댓글 삭제 중 오류:", err);
-      }
-    });
-  });
-
-  // 🔹 수정 버튼 이벤트
-  document.querySelectorAll(".edit-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      const commentId = e.target.dataset.id;
-      const commentCard = e.target.closest(".comment-card");
-      const body = commentCard.querySelector(".comment-body");
-      const oldText = body.textContent.trim();
-
-      const newText = prompt("수정할 내용을 입력하세요:", oldText);
-      if (newText && newText !== oldText) {
-        updateComment(commentId, newText);
-      }
-    });
-  });
-}
-
-/** 댓글 수정 요청 */
-async function updateComment(commentId, newText) {
-  try {
-    const res =  await fetch(`http://localhost:8080/api/${postId}/comments/${commentId}`, {
-
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: newText })
-    });
-
-    if (res.ok) {
-      alert("댓글이 수정되었습니다.");
-      commentList.innerHTML = "";
-      commentPage = 0;
-      isCommentLast = false;
-      await loadComments();
-    } else {
-      alert("수정 실패");
-    }
-  } catch (err) {
-    console.error("댓글 수정 중 오류:", err);
+    console.error("게시물 조회 중 오류:", error);
   }
 }
