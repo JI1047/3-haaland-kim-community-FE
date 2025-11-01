@@ -4,7 +4,7 @@
  * 클릭 이벤트를 중앙에서 처리 (이벤ㄴ트 위임)
  */
 import { createComment, updateComment, deleteComment } from "./commentService.js";
-import { checkCommentWriter, checkWriterPermission } from "./checkWriter.js";
+import { checkWriterPermission } from "./checkWriter.js";
 
 /**
  * 전역 이벤트 위임 등록
@@ -30,10 +30,6 @@ export function initGlobalEventDelegation(postId, refreshComments) {
     if (target.classList.contains("edit-btn")) {
       const commentId = target.dataset.id;
 
-      // 작성자 검증
-      const check = await checkCommentWriter(postId, commentId);
-      if (!check.match) return alert(check.message || "댓글 수정 권한이 없습니다.");
-
       //기존 내용 불러오기 및 수정 프롬포트 표시
       const card = target.closest(".comment-card");
       const oldText = card.querySelector(".comment-body").textContent.trim();
@@ -41,7 +37,15 @@ export function initGlobalEventDelegation(postId, refreshComments) {
 
       //입력값이 유효하면 서버 요청
       if (newText && newText !== oldText) {
-        await updateComment(postId, commentId, newText);
+        const result = await updateComment(postId, commentId, newText);
+
+        //에러 발생 시 서버에서 설정한 에러 메세지 반환
+        if (!result.ok) {
+            alert(result.message || "댓글 수정 권한이 없습니다.");
+            return;
+        }
+
+        //댓글 새로고침
         refreshComments();
       }
     }
@@ -50,13 +54,17 @@ export function initGlobalEventDelegation(postId, refreshComments) {
     if (target.classList.contains("delete-btn")) {
       const commentId = target.dataset.id;
 
-      //작성자 검증
-      const check = await checkCommentWriter(postId, commentId);
-      if (!check.match) return alert(check.message || "댓글 삭제 권한이 없습니다.");
-
       //사용자 확인 후 서버 요청
       if (confirm("정말 삭제하시겠습니까?")) {
-        await deleteComment(postId, commentId);
+        const result = await deleteComment(postId, commentId);
+
+        //에러 발생 시 서버에서 설정한 에러 메세지 반환
+        if (!result.ok) {
+            alert(result.message || "댓글 삭제 권한이 없습니다.");
+            return;
+        }
+
+        //댓글 새로고침
         refreshComments();
       }
     }

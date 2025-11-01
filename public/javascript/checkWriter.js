@@ -17,14 +17,3 @@ export async function checkWriterPermission(postId) {
   return { ok: res.ok, match: data?.match, message: data?.message };
 }
 
-/**
- * 댓글 작성자와 로그인한 사용자 일치 여부 검증
- */
-export async function checkCommentWriter(postId, commentId) {
-  const res = await fetch(
-    `http://localhost:8080/api/${postId}/comments/${commentId}/check-writer`,
-    { method: "GET", credentials: "include" }
-  );
-  const data = await res.json().catch(() => null);
-  return { ok: res.ok, match: data?.match, message: data?.message };
-}

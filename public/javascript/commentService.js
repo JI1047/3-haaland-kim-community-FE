@@ -39,18 +39,33 @@ export async function createComment(postId, text) {
 /**
  * 댓글 수정(업데이트)
  * - 댓글 ID와 수정된 텍스트를 서버에 전송하여 내용 갱신
+ * - 서버의 에러 메시지도 함께 반환 (ex: 작성자 불일치, 인증 만료 등)
  */
 export async function updateComment(postId, commentId, newText) {
-  const res = await fetch(
-    `http://localhost:8080/api/${postId}/comments/${commentId}`,
-    {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: newText }),
-    }
-  );
-  return res;
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/${postId}/comments/${commentId}`,
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: newText }),
+      }
+    );
+
+    // 응답 본문(JSON) 파싱 시도
+    const data = await res.json().catch(() => null);
+
+    // HTTP 상태와 메시지를 함께 반환
+    return {
+      ok: res.ok,
+      status: res.status,
+      message: data?.message || (res.ok ? "댓글 수정 성공" : "댓글 수정 실패"),
+    };
+  } catch (err) {
+    console.error("댓글 수정 요청 중 오류:", err);
+    return { ok: false, status: 500, message: "서버 통신 오류" };
+  }
 }
 
 /**
@@ -58,10 +73,23 @@ export async function updateComment(postId, commentId, newText) {
  * - 지정된 댓글 ID를 서버에 전달하여 삭제 요청 수행
  */
 export async function deleteComment(postId, commentId) {
-  const res = await fetch(
-    `http://localhost:8080/api/${postId}/comments/${commentId}`,
-    { method: "DELETE", credentials: "include" }
-  );
-  return res;
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/${postId}/comments/${commentId}`,
+      { method: "DELETE", credentials: "include" }
+    );
+
+    // JSON 파싱 시도
+    const data = await res.json().catch(() => null);
+
+    return {
+      ok: res.ok,
+      status: res.status,
+      message: data?.message || (res.ok ? "댓글 삭제 성공" : "댓글 삭제 실패"),
+    };
+  } catch (err) {
+    console.error("댓글 삭제 요청 중 오류:", err);
+    return { ok: false, status: 500, message: "서버 통신 오류" };
+  }
 }
 
