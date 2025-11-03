@@ -1,41 +1,42 @@
-/**
- * 공통 헤더 로더
- * 모든 페이지에서 <div id="header"> 안에 header.html 삽입
- * 세션 쿠키(sessionID)를 기준으로 로그인 여부에 따라 버튼 표시 변경
- */
-
-import { checkJwt, logout } from "/common/jwt.js";//session.js import
+import { checkJwt, logout } from "/common/jwt.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
+    // ✅ header.html 삽입
     const res = await fetch("/common/header.html");
     const headerHtml = await res.text();
     document.getElementById("header").innerHTML = headerHtml;
 
+    // ✅ CSS 중복 방지
     if (!document.querySelector('link[href$="header.css"]')) {
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = window.location.origin + "/css/header.css"; 
+      link.href = window.location.origin + "/css/header.css";
       document.head.appendChild(link);
     }
 
+    // ✅ JWT 검증
+    const session = await checkJwt();
 
-    const session = await checkJwt();//session.js의 checkSession함수를 통해 session 여부확인
-
-    /**
-     * session이 존재할 경우 로그인,회원가입 버튼 hidden처리
-     * session이 존재하지 않을 경우 마이페이지 로그아웃 버튼 hidden처리
-     */
+    // ✅ 버튼 표시 제어
     document.getElementById("login").hidden = session.login;
     document.getElementById("signup").hidden = session.login;
-
-    document.getElementById("user-info").hidden = !session.login;
     document.getElementById("logout").hidden = !session.login;
 
-    /**
-     * logout 버튼 클릭시 session js를 통한 처리
-     */
-    document.getElementById("logout").addEventListener("click",logout);
+    // ✅ 프로필 이미지 교체
+    const headerImg = document.querySelector(".header img");
+    if (session.login) {
+      headerImg.src = session.profileImage || "/haaland.jpeg";
+
+      // 프로필 클릭 시 마이페이지로 이동
+      headerImg.style.cursor = "pointer";
+      headerImg.addEventListener("click", () => {
+        window.location.href = "/getUser";
+      });
+    }
+
+    // ✅ 로그아웃 처리
+    document.getElementById("logout").addEventListener("click", logout);
 
   } catch (error) {
     console.error("헤더 로드 중 오류:", error);
