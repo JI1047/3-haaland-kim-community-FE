@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ✅ 프로필 이미지 교체
     const headerImg = document.querySelector(".header img");
     if (session.login) {
-      headerImg.src = session.profileImage || "/haaland.jpeg";
+      headerImg.src = session.profileImage || "/user.png";
 
       // 프로필 클릭 시 마이페이지로 이동
       headerImg.style.cursor = "pointer";
