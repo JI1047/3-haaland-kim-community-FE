@@ -1,3 +1,46 @@
+const profileFileInput = document.getElementById("profileFile");
+const previewImage = document.getElementById("previewImage");
+let uploadedImageUrl = null;
+
+/**
+ * 이미지 클릭 시 파일 선택창 열기
+ */
+previewImage.addEventListener("click", () => profileFileInput.click());
+
+/**
+ * 파일 선택 후 자동 업로드
+ */
+profileFileInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // 선택한 이미지 미리보기
+  previewImage.src = URL.createObjectURL(file);
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await fetch("http://localhost:8080/api/users/profile/image", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error("이미지 업로드 실패");
+
+    const fileName = await response.text();
+    uploadedImageUrl = `http://localhost:8080/uploads/${fileName}`;
+
+    // 쿠키 저장 (회원가입 시 활용)
+    document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
+
+  } catch (error) {
+    console.error(error);
+    alert("이미지 업로드 중 오류 발생");
+  }
+});
+
+
 /**
  * 회원 가입시 이메일 입력 형식 검증 이벤트 리스너 
  * 이메일을 입력했는지, '@','.'를 포함했는지 검증하는 과정
@@ -70,7 +113,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
   const nickname = document.getElementById("nickname").value;
-  const profileImage = "www.s3.url";
+  const profileImage = uploadedImageUrl || "/uploads/default.png";
 
   const cookies = document.cookie.split("; ").reduce((acc, current) => {
   const [key, value] = current.split("=");
