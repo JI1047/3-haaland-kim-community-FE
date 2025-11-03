@@ -1,83 +1,157 @@
 import { jwtGuard } from "../common/jwt.js";
-(async () => {
+
+document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await jwtGuard(); // ✅ 로그인 안 된 사용자는 여기서 로그인 페이지로 리다이렉트됨
+    await jwtGuard(); // 인증 확인
+    await initUserProfile(); // 유저 정보 불러오기
+    initImageUpload(); // 이미지 업로드 이벤트 초기화
+    initNicknameValidation(); // 닉네임 검증
+    initUpdateButton(); // 회원정보 수정
   } catch (e) {
     console.warn("인증 실패:", e.message);
   }
-})();
-/**
- * 회원정보 수정 시 닉네임 입력 형식 검증 메서드
- * 닉네임을 입력했는지, 닉네임 길이 검증, 닉네임 띄어쓰기 포함 검증을 진행한다.
- */
+});
 
+/* -----------------------------------------------------------
+ * ✅ 1. 유저 정보 초기화
+ * -----------------------------------------------------------*/
+async function initUserProfile() {
+  try {
+    const res = await fetch("http://localhost:8080/api/users", {
+      method: "GET",
+      credentials: "include",
+    });
 
-/**
- * 회원정보 수정 시 fetch 연결 메서드
- * 1. updateButton 눌렸을 때 실행되는 fetch 요청
- * 2. nickname을 id를 통해서 찾고 변수에 저장
- * 2-1. profileImage는 임의의 url로 설정
- * 3. requestBody 객체를 통해서 한번에 요청하기 위해 설정
- * 4. http://127.0.0.1:8080/api/users/profile로 백엔드 PUT요청을 보냄
- * 5. 백엔드 cors에서 세션 인증이 필요한 요청으로 설정했기 때문에 credentials: "include"로 설정
- * 5. 응답이 성공적으로 왔을 경우 회원 정보 조회 페이지로 이동
- * 6. 응답 중 오류가 발생했을 시 오류발생 메세지 반환
- */
-document.addEventListener("DOMContentLoaded", () => {
-  /** 닉네임 입력 검증 */
-  document.getElementById("nickname").addEventListener("input", (e) => {
-    const nickname = e.target.value;
-    validateNickname(nickname);
+    if (!res.ok) throw new Error("유저 정보 요청 실패");
+
+    const data = await res.json();
+    document.querySelector(".profile-image img").src =
+      data.profileImage || "/haaland.jpeg";
+    document.getElementById("email").textContent = data.email;
+  } catch (err) {
+    console.error("유저 정보 불러오기 실패:", err);
+  }
+}
+
+/* -----------------------------------------------------------
+ * ✅ 2. 이미지 클릭 → 파일 선택 → 서버 업로드
+ * -----------------------------------------------------------*/
+function initImageUpload() {
+  const image = document.querySelector(".profile-image img");
+
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+  document.body.appendChild(fileInput);
+
+  // 클릭 시 파일 선택창 열기
+  image.addEventListener("click", () => fileInput.click());
+
+  // 파일 선택 후 업로드
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 미리보기 즉시 표시
+    const previewUrl = URL.createObjectURL(file);
+    image.src = previewUrl;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // ✅ 네가 지정한 로직 그대로 사용
+    try {
+      const response = await fetch("http://localhost:8080/api/users/profile/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("이미지 업로드 실패");
+
+      const fileName = await response.text();
+      const uploadedImageUrl = `http://localhost:8080/uploads/${fileName}`;
+
+      // ✅ 쿠키에 저장 (회원가입 시 활용)
+      document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
+
+      alert("이미지 업로드 완료!");
+    } catch (error) {
+      console.error(error);
+      alert("이미지 업로드 중 오류 발생");
+    }
   });
+}
 
-  /** 회원정보 수정 요청 */
-  document.getElementById("updateButton").addEventListener("click", async () => {
-    const nickname = document.getElementById("nickname").value;
-    const profileImage = "www.s3.url";
+/* -----------------------------------------------------------
+ * ✅ 3. 닉네임 검증
+ * -----------------------------------------------------------*/
+function initNicknameValidation() {
+  const nicknameInput = document.getElementById("nickname");
+  nicknameInput.addEventListener("input", (e) => validateNickname(e.target.value));
+}
 
-    const requestBody = { nickname, profileImage };
+function validateNickname(nickname) {
+  const errorEl = document.getElementById("nicknameError");
+
+  if (!nickname) {
+    errorEl.textContent = "닉네임을 입력해주세요.";
+    return false;
+  }
+  if (nickname.length > 10) {
+    errorEl.textContent = "닉네임은 최대 10자까지 작성 가능합니다.";
+    return false;
+  }
+  if (nickname.includes(" ")) {
+    errorEl.textContent = "띄어쓰기를 없애주세요.";
+    return false;
+  }
+
+  errorEl.textContent = "";
+  return true;
+}
+
+/* -----------------------------------------------------------
+ * ✅ 4. 회원정보 수정 (닉네임 + 쿠키에 저장된 이미지 URL)
+ * -----------------------------------------------------------*/
+function initUpdateButton() {
+  const updateButton = document.getElementById("updateButton");
+
+  updateButton.addEventListener("click", async () => {
+    const nickname = document.getElementById("nickname").value.trim();
+    if (!validateNickname(nickname)) return;
+
+    // ✅ 쿠키에 저장된 프로필 이미지 URL 가져오기
+    const profileImageUrl = getCookie("profileImageUrl") || "www.s3.url";
+
+    const requestBody = { nickname, profileImage: profileImageUrl };
 
     try {
       const response = await fetch("http://localhost:8080/api/users/profile", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
         credentials: "include",
       });
 
       if (response.ok) {
-        alert("회원수정 성공!");
+        alert("회원정보 수정 완료!");
+        document.cookie = "profileImageUrl=; Max-Age=0; path=/"; // 쿠키 삭제
         location.href = "/getUser";
       } else {
-        alert("회원수정 실패. 다시 시도해주세요.");
+        alert("회원정보 수정 실패. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("서버 요청 중 오류 발생:", error);
+      console.error("회원정보 수정 오류:", error);
       alert("서버 요청 중 오류가 발생했습니다.");
     }
   });
-});
+}
 
-//회원정보 수정 메서드는 회원가입과 동일
-function validateNickname(nickname){
-    const errorElement =document.getElementById("nicknameError");
-
-    if(!nickname){
-        errorElement.textContent = "닉네임을 입력해주세요.";
-        return false;
-    }
-    if(nickname.length > 10){
-        errorElement.textContent = "닉네임은 최대 10자까지 작성 가능합니다."
-        return false;
-    }
-    if(nickname.includes(" ")){
-        errorElement.textContent = "띄어쓰기를 없애주세요"
-        return false;
-    }
-    
-    errorElement.textContent = ""
-    return true;
-
+/* -----------------------------------------------------------
+ * ✅ 5. 쿠키 유틸리티
+ * -----------------------------------------------------------*/
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? match[2] : null;
 }
