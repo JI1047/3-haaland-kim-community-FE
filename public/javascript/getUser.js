@@ -25,6 +25,8 @@ async function initPage() {
     const data = await response.json();
     document.getElementById("email").textContent = data.email;
     document.getElementById("nickname").textContent = data.nickname;
+    document.querySelector(".profile-image img").src = data.profileImage || "/haaland.jpeg";
+
   } catch (error) {
     console.error("에러:", error);
   }
