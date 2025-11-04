@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* -----------------------------------------------------------
- * ✅ 1. 유저 정보 초기화
+ *  1. 유저 정보 초기화
  * -----------------------------------------------------------*/
 async function initUserProfile() {
   try {
@@ -34,7 +34,7 @@ async function initUserProfile() {
 }
 
 /* -----------------------------------------------------------
- * ✅ 2. 이미지 클릭 → 파일 선택 → 서버 업로드
+ * 2. 이미지 클릭 → 파일 선택 → 서버 업로드
  * -----------------------------------------------------------*/
 function initImageUpload() {
   const image = document.querySelector(".profile-image img");
@@ -83,7 +83,7 @@ function initImageUpload() {
 }
 
 /* -----------------------------------------------------------
- * ✅ 3. 닉네임 검증
+ *  3. 닉네임 검증
  * -----------------------------------------------------------*/
 function initNicknameValidation() {
   const nicknameInput = document.getElementById("nickname");
@@ -111,7 +111,7 @@ function validateNickname(nickname) {
 }
 
 /* -----------------------------------------------------------
- * ✅ 4. 회원정보 수정 (닉네임 + 쿠키에 저장된 이미지 URL)
+ *  4. 회원정보 수정 (닉네임 + 쿠키에 저장된 이미지 URL)
  * -----------------------------------------------------------*/
 function initUpdateButton() {
   const updateButton = document.getElementById("updateButton");
@@ -148,7 +148,7 @@ function initUpdateButton() {
 }
 
 /* -----------------------------------------------------------
- * ✅ 5. 쿠키 유틸리티
+ *  5. 쿠키 유틸리티
  * -----------------------------------------------------------*/
 function getCookie(name) {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
