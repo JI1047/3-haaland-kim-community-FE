@@ -56,6 +56,13 @@ async function loadPostDetail() {
     document.getElementById("likeCount").textContent = data.likeCount;
     document.getElementById("lookCount").textContent = data.lookCount;
     document.getElementById("commentCount").textContent = data.commentCount;
+    // 작성자 프로필 이미지 렌더링
+    const profileImg = document.querySelector(".profile .left img");
+    profileImg.src = data.profileImage || "/user.png";
+
+    // 게시물 이미지 렌더링
+    const postImg = document.querySelector(".image-box img");
+    postImg.src = data.postImage || "/Default-PostImage.jpeg";
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
   }

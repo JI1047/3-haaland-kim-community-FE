@@ -75,7 +75,6 @@ function initImageUpload() {
       // ✅ 쿠키에 저장 (회원가입 시 활용)
       document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
 
-      alert("이미지 업로드 완료!");
     } catch (error) {
       console.error(error);
       alert("이미지 업로드 중 오류 발생");
