@@ -236,12 +236,13 @@ body {
   margin-bottom: 10px;
 }
 
-.comment-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  color: #003366;
+.comment-header img {
+  width: 35px;          /* 이미지 너비 */
+  height: 35px;         /* 이미지 높이 */
+  border-radius: 50%;   /* 둥글게 */
+  object-fit: cover;    /* 이미지 비율 유지하면서 잘라냄 */
+  border: 2px solid #cce0ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .comment-body {

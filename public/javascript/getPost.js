@@ -26,13 +26,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 전역 이벤트 위임 등록(댓글 수정/삭세/생성 + 게시물 수정/삭제)
   initGlobalEventDelegation(postId, () => initCommentSection(postId));
+  initLikeButton();//좋아요 이벤트 등록
 });
 
 /**
  * 게시물 상세 조회
  * 1) 서버로무터 게시물 응답dto 데이터를 응답받고
  * 2) 화면에 렌더링
- * @returns 
  */
 async function loadPostDetail() {
   try {
@@ -66,4 +66,40 @@ async function loadPostDetail() {
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
   }
+}
+/* -----------------------------------------------------------
+ * 좋아요 버튼 로직
+ * -----------------------------------------------------------*/
+function initLikeButton() {
+  const likeButton = document.getElementById("likeButton");
+  const likeCountEl = document.getElementById("likeCount");
+
+  likeButton.addEventListener("click", async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/posts/${postId}/like`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const result = await response.text();
+      let currentCount = parseInt(likeCountEl.textContent || "0");
+
+      // 서버 응답에 따라 UI 변경
+      if (result.includes("생성")) {
+        likeCountEl.textContent = currentCount + 1;
+        likeButton.textContent = "💔 좋아요 취소";
+      } else if (result.includes("제거")) {
+        likeCountEl.textContent = Math.max(0, currentCount - 1);
+        likeButton.textContent = "❤️ 좋아요";
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류:", error);
+      alert("좋아요 요청 중 오류가 발생했습니다.");
+    }
+  });
 }

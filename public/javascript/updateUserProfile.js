@@ -60,7 +60,6 @@ function initImageUpload() {
     const formData = new FormData();
     formData.append("file", file);
 
-    // ✅ 네가 지정한 로직 그대로 사용
     try {
       const response = await fetch("http://localhost:8080/api/users/profile/image", {
         method: "POST",
@@ -72,7 +71,6 @@ function initImageUpload() {
       const fileName = await response.text();
       const uploadedImageUrl = `http://localhost:8080/uploads/${fileName}`;
 
-      // ✅ 쿠키에 저장 (회원가입 시 활용)
       document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
 
     } catch (error) {
