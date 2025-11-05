@@ -151,3 +151,17 @@ a[href="/updateUserProfile"]:hover {
   background-color: #005fcc;
   transform: translateY(-2px);
 }
+.delete-button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #d9363e;
+}
