@@ -12,7 +12,7 @@ import { jwtGuard } from "../common/jwt.js";
 
 async function initPage() {
   try {
-    const response = await fetch("http://localhost:8080/api/users", {
+      const response = await fetch(`${window.BACKEND_URL}/api/users`, {
       method: "GET",
       credentials: "include"
     });
@@ -42,7 +42,7 @@ function initDeleteUserButton() {
     if (!confirm("정말로 회원 탈퇴하시겠습니까?")) return;
 
     try {
-      const response = await fetch("http://localhost:8080/api/users", {
+        const response = await fetch(`${window.BACKEND_URL}/api/users`, {
         method: "DELETE",
         credentials: "include"
       });

@@ -1,3 +1,6 @@
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
+console.log("백엔드 URL:", BACKEND_URL);
+
 // node_modules 에 있는 express 관련 파일을 가져온다.
 var express = require('express')
 const path = require('path')
@@ -12,6 +15,12 @@ app.listen(3000, function() {
 
 app.use(express.static(path.join(__dirname, "public")))
 
+
+app.get("/env.js", (req, res) => {
+  res.type("application/javascript");
+  res.send(`window.BACKEND_URL = "${BACKEND_URL}";`);
+});
+
 app.get('/', function(req,res) {
     res.sendFile(__dirname + "/public/html/getPostList.html")
 })
@@ -24,7 +33,7 @@ app.get('/login',(req,res) =>{
 })
 //회원가입 눌럿을 시 thymeleaf페이지로 이동하도록 설정
 app.get('/signup',(req,res) =>{
-    res.redirect("http://localhost:8080/terms");
+    res.redirect(`${BACKEND_URL}/terms`);
 })
 //thymeleaf페이지에서 다음 단계 이동시 정보 입력 페이지로 이동
 app.get('/signup-input', (req, res) => {

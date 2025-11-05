@@ -6,6 +6,9 @@
 import { createComment, updateComment, deleteComment } from "./commentService.js";
 import { checkWriterPermission } from "./checkWriter.js";
 
+const BASE_URL = window.BACKEND_URL || "http://localhost:8080";
+
+
 /**
  * 전역 이벤트 위임 등록
  * - 게시물 수정/삭제 버튼 클릭
@@ -98,7 +101,7 @@ async function handleDeletePost(postId) {
 
   //사용자 확인 후 삭제 요청
   if (confirm("정말 삭제하시겠습니까?")) {
-    const res = await fetch(`http://localhost:8080/api/posts/${postId}/delete`, {
+    const res = await fetch(`${BASE_URL}/api/posts/${postId}/delete`, {
       method: "DELETE",
       credentials: "include",
     });

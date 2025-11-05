@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  * -----------------------------------------------------------*/
 async function loadPostDetail() {
   try {
-    const response = await fetch(`http://localhost:8080/api/posts/${postId}`, {
+    const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}`, {
       method: "GET",
       credentials: "include",
     });
@@ -61,7 +61,7 @@ function initImageUpload() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8080/api/posts/image", {
+      const response = await fetch(`${window.BACKEND_URL}/api/posts/image`, {
         method: "POST",
         body: formData,
       });
@@ -117,7 +117,7 @@ function initUpdateButton() {
     const requestBody = { title, text, postImage: postImageUrl };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/posts/${postId}/update`, {
+      const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),

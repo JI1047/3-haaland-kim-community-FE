@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  * -----------------------------------------------------------*/
 async function initUserProfile() {
   try {
-    const res = await fetch("http://localhost:8080/api/users", {
+      const res = await fetch(`${window.BACKEND_URL}/api/users`, {
       method: "GET",
       credentials: "include",
     });
@@ -61,7 +61,7 @@ function initImageUpload() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/profile/image", {
+        const response = await fetch(`${window.BACKEND_URL}/api/users/profile/image`, { 
         method: "POST",
         body: formData,
       });
@@ -69,7 +69,7 @@ function initImageUpload() {
       if (!response.ok) throw new Error("이미지 업로드 실패");
 
       const fileName = await response.text();
-      const uploadedImageUrl = `http://localhost:8080/uploads/${fileName}`;
+      const uploadedImageUrl = `${window.BACKEND_URL}/uploads/${fileName}`;
 
       document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
 
@@ -124,7 +124,7 @@ function initUpdateButton() {
     const requestBody = { nickname, profileImage: profileImageUrl };
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/profile", {
+        const response = await fetch(`${window.BACKEND_URL}/api/users/profile`, { 
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),

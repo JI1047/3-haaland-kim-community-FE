@@ -55,7 +55,7 @@ function initImageUpload() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8080/api/posts/image", {
+        const response = await fetch(`${window.BACKEND_URL}/api/posts/image`, {
         method: "POST",
         body: formData,
       });
@@ -63,7 +63,7 @@ function initImageUpload() {
       if (!response.ok) throw new Error("이미지 업로드 실패");
 
       const fileName = await response.text();
-      const uploadedImageUrl = `http://localhost:8080/uploads/${fileName}`;
+      const uploadedImageUrl = `${window.BACKEND_URL}/uploads/${fileName}`;
 
       // ✅ 쿠키 저장 (게시물 생성 시 사용)
       document.cookie = `postImageUrl=${uploadedImageUrl}; path=/`;
@@ -95,7 +95,7 @@ function initCreateButton() {
     const requestBody = { title, text, postImage };
 
     try {
-      const response = await fetch("http://localhost:8080/api/posts/create", {
+        const response = await fetch(`${window.BACKEND_URL}/api/posts/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),

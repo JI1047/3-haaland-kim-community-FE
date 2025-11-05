@@ -47,7 +47,7 @@ document.getElementById("updateButton").addEventListener("click", async() => {
         confirmPassword
     }
     try{
-      const response = await fetch("http://localhost:8080/api/users/password", {
+      const response = await fetch(`${window.BACKEND_URL}/api/users/password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

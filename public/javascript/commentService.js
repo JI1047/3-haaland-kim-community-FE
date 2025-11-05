@@ -8,6 +8,8 @@
  * 4) 댓글 삭제
  */
 
+const BASE_URL = window.BACKEND_URL || "http://localhost:8080";
+
 
 /**
  * 댓글 불러오기
@@ -15,7 +17,7 @@
  */
 export async function loadComments(postId, page, size) {
   const res = await fetch(
-    `http://localhost:8080/api/${postId}/comments?page=${page}&size=${size}`,
+    `${BASE_URL}/api/${postId}/comments?page=${page}&size=${size}`,
     { method: "GET", credentials: "include" }
   );
   if (!res.ok) throw new Error("댓글 로드 실패");
@@ -27,7 +29,7 @@ export async function loadComments(postId, page, size) {
  * - 사용자가 입력한 내용을 서버로 전송하여 새 댓글 등록
  */
 export async function createComment(postId, text) {
-  const res = await fetch(`http://localhost:8080/api/${postId}/comments`, {
+  const res = await fetch(`${BASE_URL}/api/${postId}/comments`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -44,8 +46,7 @@ export async function createComment(postId, text) {
 export async function updateComment(postId, commentId, newText) {
   try {
     const res = await fetch(
-      `http://localhost:8080/api/${postId}/comments/${commentId}`,
-      {
+    `${BASE_URL}/api/${postId}/comments/${commentId}`,      {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -74,9 +75,8 @@ export async function updateComment(postId, commentId, newText) {
  */
 export async function deleteComment(postId, commentId) {
   try {
-    const res = await fetch(
-      `http://localhost:8080/api/${postId}/comments/${commentId}`,
-      { method: "DELETE", credentials: "include" }
+    const res = await fetch(`${BASE_URL}/api/${postId}/comments/${commentId}`, {
+       method: "DELETE", credentials: "include" }
     );
 
     // JSON 파싱 시도

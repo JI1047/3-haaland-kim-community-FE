@@ -21,7 +21,7 @@ profileFileInput.addEventListener("change", async (e) => {
   formData.append("file", file);
 
   try {
-    const response = await fetch("http://localhost:8080/api/users/profile/image", {
+    const response = await fetch(`${window.BACKEND_URL}/api/users/profile/image`, {
       method: "POST",
       body: formData,
     });
@@ -29,7 +29,7 @@ profileFileInput.addEventListener("change", async (e) => {
     if (!response.ok) throw new Error("이미지 업로드 실패");
 
     const fileName = await response.text();
-    uploadedImageUrl = `http://localhost:8080/uploads/${fileName}`;
+    uploadedImageUrl = `${window.BACKEND_URL}/uploads/${fileName}`;
 
     // 쿠키 저장 (회원가입 시 활용)
     document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
@@ -140,7 +140,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
 
 
   try {
-    const response = await fetch("http://localhost:8080/api/users/sign-up", {
+      const response = await fetch(`${window.BACKEND_URL}/api/users/sign-up`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),

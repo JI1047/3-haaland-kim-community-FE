@@ -5,6 +5,9 @@
  * 2) 댓글 작성자와 로그인 한 사용자 검증
  */
 
+const BASE_URL = window.BACKEND_URL || "http://localhost:8080";
+
+
 /**
  * 게시물 작성자와 로그인한 사용자 일치 여부 검증
  */

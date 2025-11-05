@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  */
 async function loadPostDetail() {
   try {
-    const response = await fetch(`http://localhost:8080/api/posts/${postId}`, {
+      const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}`, {
       method: "GET",
       credentials: "include",
     });
@@ -76,7 +76,7 @@ function initLikeButton() {
 
   likeButton.addEventListener("click", async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/posts/${postId}/like`, {
+        const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}/like`, {
         method: "POST",
         credentials: "include",
       });

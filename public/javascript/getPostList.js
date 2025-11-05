@@ -33,7 +33,7 @@ async function loadPosts() {
 
 
   try {
-    const res = await fetch(`http://localhost:8080/api/posts/list?page=${page}&size=${size}`);
+    const res = await fetch(`${window.BACKEND_URL}/api/posts/list?page=${page}&size=${size}`);
     if (!res.ok) throw new Error("게시글 로드 실패");
 
     const data = await res.json();
