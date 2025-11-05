@@ -1,0 +1,52 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/signup.css">
+  <title>웹 페이지</title>
+  <script defer src="/javascript/signup.js"></script>
+  <link rel="stylesheet" href="/css/header.css">  
+  <script type="module" src="/common/header.js"></script>
+
+      
+</head>
+<br>
+<br>
+  <body>
+    <div id="header"></div>
+    <hr class="divider">
+
+  
+    <div class="profile-image">
+      <p>프로필 사진</p>
+      <img id="previewImage" src="/user.png" alt="프로필 이미지 미리보기" width="150" height="150">
+      <input type="file" id="profileFile" accept="image/*" style="display: none;">
+    </div>
+
+  <div class="input-box">
+    <p>이메일</p>
+    <input id="email" type="text" placeholder="이메일을 입력하세요"></input> 
+    <p id="emailError" class="errorMessage"></p> 
+  </div>
+  <div class="input-box">
+    <p>비밀번호</p>
+    <input id="password" type="text" placeholder="비밀번호를 입력하세요"></input> 
+    <p id="passwordError" class="errorMessage"></p> 
+  </div>
+  <div class="input-box">
+    <p>비밀번호 확인</p>
+    <input id="confirmPassword" type="text" placeholder="비밀번호를 한번 더 입력하세요"></input> 
+    <p id="confirmPasswordError" class="errorMessage"></p> 
+  </div>
+  <div class="input-box">
+    <p>닉네임</p>
+    <input id="nickname" type="text" placeholder="닉네임을 입력하세요"></input> 
+    <p id="nicknameError" class="errorMessage"></p> 
+
+    <button id="signupButton"> 회원가입 </button>
+  </div>
+
+
+
+  </body>
+  
+</html>

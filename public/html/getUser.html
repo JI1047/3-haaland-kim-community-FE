@@ -1,0 +1,39 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/getUser.css">
+  
+  <script type="module" src="/javascript/getUser.js"></script>
+
+  <title>웹 페이지</title>
+  <link rel="stylesheet" href="/css/header.css">  
+  <script type="module" src="/common/header.js"></script>
+</head> 
+  <body>
+  <div id="header"></div>
+  <hr class="divider">
+
+    
+  <div class="profile-image">
+    <p>프로필 사진</p>
+    <img src = "/user.png" alt="이미지">
+  </div>
+  <div class="input-box">
+    <p>이메일</p>
+
+    <p id = "email"></p>
+  </div>
+  
+  <div class="input-box">
+    <p>닉네임</p>
+
+    <p id="nickname"></p>
+  </div>
+    <a href="/updateUserPassword">비밀번호 수정</a>
+    <a href="/updateUserProfile">프로필 수정</a>
+    <button id="deleteUserButton" class="delete-button">회원 탈퇴</button>
+
+
+  </body>
+</html>
+    

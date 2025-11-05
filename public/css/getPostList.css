@@ -1,0 +1,93 @@
+/* ✅ 전체 레이아웃 */
+body {
+  font-family: "Noto Sans KR", sans-serif;
+  background: linear-gradient(135deg, #d7e8ff 0%, #f5f9ff 100%);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1e1e1e;
+}
+
+
+
+/* ✅ 게시글 작성 버튼 */
+.write-btn {
+  margin-top: 30px;
+  font-size: 1.05rem;
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 30px;
+  padding: 10px 24px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.write-btn:hover {
+  background-color: #005fcc;
+  transform: translateY(-2px);
+}
+
+/* ✅ 게시글 리스트 */
+#postList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 90%;
+  max-width: 720px;
+  margin: 40px auto;
+}
+
+/* 게시글 카드 */
+.post-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.post-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 8px;
+}
+
+.post-meta {
+  font-size: 0.9rem;
+  color: #666;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 8px;
+}
+
+/* 로더 */
+#loader {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #114b8c;
+  font-size: 0.95rem;
+}
+
+#loader::after {
+  content: "⏳";
+  display: inline-block;
+  margin-left: 6px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

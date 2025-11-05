@@ -1,0 +1,69 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>웹 페이지</title>
+  <link rel="stylesheet" href="/css/getPost.css">
+  <script type="module" src="/javascript/getPost.js"></script>
+  <link rel="stylesheet" href="/css/header.css">  
+  <script type="module" src="/common/header.js"></script>
+</head>
+
+<body>
+  <div id="header"></div>
+  <hr class="divider">
+
+  <div class="box1">
+    <h2 class="title" id="title"></h2>
+    <div class="profile">
+      <div class="left">
+        <img src="/user.png" alt="이미지">
+        <p id="createdUserNickName"></p>
+        <p id="createdAt"></p>
+      </div>
+      <div class="right">
+        <a href="#" id="updatePostButton">게시글 수정</a>
+        <a href="#" id="deletePostButton">게시글 삭제</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="image-box">
+    <img src="/Default-PostImage.jpeg" alt="이미지">
+  </div>
+
+  <div class="context-box">
+    <p id="text"></p>
+  </div>
+
+  <div class="view-box">
+    <div class="view">
+      좋아요 수
+      <p id="likeCount"></p>
+      <button id="likeButton">❤️ 좋아요</button>  
+    </div>
+    <div class="view">
+      조회 수
+      <p id="lookCount"></p>
+    </div>
+    <div class="view">
+      댓글 수
+      <p id="commentCount"></p>
+    </div>
+  </div>
+
+  <!-- ✅ 댓글 등록 -->
+  <div class="comment-box">
+    <input type="text" id="commentInput" placeholder="댓글을 남겨주세요!">
+    <button id="createCommentButton">댓글 등록</button>
+  </div>
+
+  <!-- ✅ 댓글 리스트 + 로딩 표시 -->
+  <div id="commentSection" style="width:800px; margin:auto; margin-top:20px;">
+    <h3>💬 댓글 목록</h3>
+    <div id="commentList"></div>
+    <div id="loader" style="text-align:center; display:none;">로딩 중...</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+/* ✅ 전체 레이아웃 */
+body {
+  font-family: "Noto Sans KR", sans-serif;
+  background: linear-gradient(135deg, #d7e8ff 0%, #f5f9ff 100%);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1e1e1e;
+}
+
+/* ✅ 헤더 */
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px;
+  padding: 20px 0;
+}
+
+/* 제목 */
+.header a h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #114b8c;
+  margin: 0;
+  border-bottom: 4px solid #5b73e8;
+  padding-bottom: 4px;
+}
+
+/* 헤더 이미지 */
+.header img {
+  position: absolute;
+  right: 160px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 버튼 오른쪽 끝 정렬 */
+.user-link {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  display: flex;
+  gap: 15px;
+}
+
+.user-link a {
+  text-decoration: none;
+  color: #0a6cff;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-link a:hover {
+  background-color: #0a6cff;
+  color: white;
+}
+
+/* ✅ 구분선 */
+.divider {
+  height: 4px;
+  background-color: #b4c9ff; 
+  margin: 20px 0; 
+  border: none;
+}
+
+/* ✅ 입력 영역 */
+.input-box {
+  width: 800px;
+  margin: 15px auto;
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;  
+  gap: 8px;
+}
+
+.input-box h2 {
+  color: #003366;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* ✅ 텍스트 필드 */
+.input-box input,
+.input-box textarea {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+  background-color: #f4f8ff;
+}
+
+.input-box textarea {
+  height: 300px;
+  resize: none;
+}
+
+/* ✅ 이미지 등록 버튼 */
+.submit {
+  width: 160px;
+  margin-top: 10px;
+  padding: 10px 0;
+  background-color: #007bff;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 3px 8px rgba(0,123,255,0.3);
+}
+
+.submit:hover {
+  background-color: #005fcc;
+  transform: translateY(-2px);
+}
+
+/* ✅ 게시물 생성 버튼 */
+#createPostButton {
+  align-self: center;
+  width: 200px;
+  margin-top: 15px;
+  padding: 12px 0;
+  background-color: #007bff;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 3px 10px rgba(0,123,255,0.3);
+}
+
+#createPostButton:hover {
+  background-color: #005fcc;
+  transform: translateY(-2px);
+}
+
+/* ✅ 에러 메시지 */
+.errorMessage {
+  color: red;
+  font-size: 0.9em;
+  height: 16px; 
+  margin-top: 4px;
+}

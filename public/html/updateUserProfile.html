@@ -1,0 +1,32 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/updateUserProfile.css">
+  <script type="module" src="/javascript/updateUserProfile.js"></script>
+  <link rel="stylesheet" href="/css/header.css">  
+  <script type="module" src="/common/header.js"></script>
+  <title>웹 페이지</title>
+</head>
+  <body>
+    <div id="header"></div>
+    <hr class="divider">
+
+    <div class="profile-image">
+      <p>프로필 사진</p>
+      <img src = "/haaland.jpeg" alt="이미지">
+  </div>
+    <div class="input-box">
+    <p>이메일</p>
+    <p id="email"></p>
+  </div>
+
+  <div class="input-box">
+    <p>닉네임</p>
+    <input id="nickname" type="text" placeholder="닉네임을 입력하세요"></input> 
+    <p id="nicknameError" class="errorMessage"></p> 
+    <button id="updateButton"> 회원정보 수정 </button>
+  </div>
+  </body>
+  
+</html>
+    

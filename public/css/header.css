@@ -1,0 +1,60 @@
+/* ✅ 헤더 전체 */
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+  width: 100%;
+  padding: 20px 40px;
+  border-bottom: 2px solid rgba(255,255,255,0.4);
+}
+
+/* ✅ 제목 */
+.header a h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #114b8c;
+  margin: 0 auto; /* 🔥 중앙 정렬 (좌우 여백 자동 분배) */
+  border-bottom: 4px solid #7ab8ff;
+  padding-bottom: 4px;
+  text-align: center;
+  flex: 1; /* 제목이 중앙에 위치할 수 있게 가변 폭 부여 */
+}
+
+/* ✅ 프로필 이미지 */
+.header img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  margin-right: 100px;
+  margin-left: 50px;
+  position: relative;
+  left: 0; /* 왼쪽 고정 */
+}
+
+/* ✅ 로그인/회원가입 버튼 */
+.user-link {
+  position: absolute;
+  right: 10px; /* 🔥 완전히 오른쪽 구석 */
+  display: flex;
+  gap: 12px;
+}
+
+.user-link a {
+  text-decoration: none;
+  color: #0a6cff;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-link a:hover {
+  background-color: #0a6cff;
+  color: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
