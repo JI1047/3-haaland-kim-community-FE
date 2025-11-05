@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
+const BACKEND_URL = "http://15.164.220.1:8080";
 console.log("백엔드 URL:", BACKEND_URL);
 
 // node_modules 에 있는 express 관련 파일을 가져온다.
