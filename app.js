@@ -10,22 +10,41 @@ const app = express();
 const PORT = 3000;
 
 /**
- *  EC2 퍼블릭 IP 자동 가져오기
+ * EC2 퍼블릭 IP 자동 가져오기 (IMDSv2 대응)
  * - EC2 내부에서 실행되면 실제 퍼블릭 IP 사용
  * - 로컬 환경에서는 localhost로 fallback
  */
 async function getPublicIp() {
   try {
-    const res = await fetch("http://169.254.169.254/latest/meta-data/public-ipv4");
-    if (!res.ok) throw new Error("Failed to fetch EC2 metadata");
-    const ip = await res.text();
+    //  IMDSv2 토큰 발급 요청
+    const tokenResponse = await fetch("http://169.254.169.254/latest/api/token", {
+      method: "PUT",
+      headers: {
+        "X-aws-ec2-metadata-token-ttl-seconds": "60",
+      },
+    });
+
+    if (!tokenResponse.ok) throw new Error("Failed to fetch IMDSv2 token");
+    const token = await tokenResponse.text();
+
+    //  발급받은 토큰으로 public-ipv4 요청
+    const ipResponse = await fetch("http://169.254.169.254/latest/meta-data/public-ipv4", {
+      headers: {
+        "X-aws-ec2-metadata-token": token,
+      },
+    });
+
+    if (!ipResponse.ok) throw new Error("Failed to fetch EC2 metadata");
+    const ip = await ipResponse.text();
+
     console.log(" EC2 Public IP:", ip);
     return ip;
   } catch (err) {
     console.error(" EC2 IP fetch 실패:", err.message);
-    return "localhost"; // 로컬 fallback
+    return "localhost"; // 실패 시 fallback
   }
 }
+
 
 //  Express 서버 시작 전 IP 가져와서 BACKEND_URL 구성
 (async () => {
