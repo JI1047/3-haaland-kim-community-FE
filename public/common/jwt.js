@@ -3,7 +3,7 @@
  */
 export async function checkJwt() {
   try {
-    const res = await fetch("http://localhost:8080/api/jwt/validate", {
+    const res = await fetch(`${window.BACKEND_URL}/api/jwt/validate`, {
       method: "GET",
       credentials: "include",
     });
@@ -46,7 +46,7 @@ export async function jwtGuard(redirectUrl = "/login") {
  */
 export async function logout() {
   try {
-    await fetch("http://localhost:8080/api/users/log-out", { 
+    await fetch(`${window.BACKEND_URL}/api/users/log-out`, { 
       method: "PUT",
       credentials: "include"
     });
