@@ -13,7 +13,7 @@ const BASE_URL = window.BACKEND_URL || "http://localhost:8080";
  */
 export async function checkWriterPermission(postId) {
   const res = await fetch(
-    `http://localhost:8080/api/posts/${postId}/check-writer`,
+    `${BASE_URL}/api/posts/${postId}/check-writer`,
     { method: "GET", credentials: "include" }
   );
   const data = await res.json().catch(() => null);
