@@ -5,23 +5,23 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
-// ✅ EC2 환경변수에서 BACKEND_URL 읽기 (run-all.sh에서 세팅됨)
+// EC2 환경변수에서 BACKEND_URL 읽기 (run-all.sh에서 세팅됨)
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 
-console.log("✅ BACKEND_URL:", BACKEND_URL);
+// ---------------------------------------------------------
+// env.js: 프론트엔드에서 window.BACKEND_URL 로 접근 가능
+// ---------------------------------------------------------
+app.get("/env.js", (res) => {
+  res.type("application/javascript");
+  res.send(`window.BACKEND_URL = "${BACKEND_URL}";`);
+});
 
 // ---------------------------------------------------------
 // 정적 파일 서빙
 // ---------------------------------------------------------
 app.use(express.static(path.join(__dirname, "public")));
 
-// ---------------------------------------------------------
-// env.js: 프론트엔드에서 window.BACKEND_URL 로 접근 가능
-// ---------------------------------------------------------
-app.get("/env.js", (req, res) => {
-  res.type("application/javascript");
-  res.send(`window.BACKEND_URL = "${BACKEND_URL}";`);
-});
+
 
 // ---------------------------------------------------------
 // HTML 라우팅
@@ -37,7 +37,7 @@ app.get("/login", (_, res) =>
 );
 
 // ✅ 백엔드 thymeleaf 페이지로 리다이렉트
-app.get("/signup", (_, res) => res.redirect(`${BACKEND_URL}/terms`));
+app.get("/signup", (_, res) => res.redirect(`${BACKEND_URL}/terms/signup`));
 
 // ✅ 다음 단계 signup.html
 app.get("/signup-input", (_, res) =>
