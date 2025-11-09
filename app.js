@@ -11,7 +11,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 // ---------------------------------------------------------
 // env.js: 프론트엔드에서 window.BACKEND_URL 로 접근 가능
 // ---------------------------------------------------------
-app.get("/env.js", (res) => {
+app.get("/env.js", (req, res) => {
   res.type("application/javascript");
   res.send(`window.BACKEND_URL = "${BACKEND_URL}";`);
 });
