@@ -8,37 +8,45 @@ let uploadedImageUrl = null;
 previewImage.addEventListener("click", () => profileFileInput.click());
 
 /**
- * 파일 선택 후 자동 업로드
+ * 파일 선택 후 Presigned URL을 통해 S3에 직접 업로드
  */
 profileFileInput.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  // 선택한 이미지 미리보기
+  // 미리보기 표시
   previewImage.src = URL.createObjectURL(file);
 
-  const formData = new FormData();
-  formData.append("file", file);
-
   try {
-    const response = await fetch(`${window.BACKEND_URL}/api/users/profile/image`, {
-      method: "POST",
-      body: formData,
+    //  1) Presigned URL 요청 (백엔드 → AWS S3 인증용 URL 발급)
+    const res = await fetch(
+      `${window.BACKEND_URL}/api/s3/presigned?fileName=${encodeURIComponent(file.name)}`
+    );
+    if (!res.ok) throw new Error("Presigned URL 요청 실패");
+    const { url, key, fileName } = await res.json();
+
+    //  2) Presigned URL로 직접 업로드 (브라우저 → S3)
+    const uploadRes = await fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": file.type },
+      body: file,
     });
+    if (!uploadRes.ok) throw new Error("S3 업로드 실패");
 
-    if (!response.ok) throw new Error("이미지 업로드 실패");
+    // 3) 업로드 성공 시 Key 저장 (DB 저장용)
+    uploadedFileKey = key;
 
-    const fileName = await response.text();
-    uploadedImageUrl = `${window.BACKEND_URL}/uploads/${fileName}`;
+    // 4) 쿠키에 파일 key 저장 (회원가입 시 백엔드 전달용)
+    document.cookie = `profileImageKey=${uploadedFileKey}; path=/; max-age=${60 * 30};`;
 
-    // 쿠키 저장 (회원가입 시 활용)
-    document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
+    alert("이미지 업로드 완료");
 
   } catch (error) {
-    console.error(error);
-    alert("이미지 업로드 중 오류 발생");
+    console.error("이미지 업로드 중 오류:", error);
+    alert("이미지 업로드 실패");
   }
 });
+
 
 
 /**
@@ -113,59 +121,60 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
   const nickname = document.getElementById("nickname").value;
-  const profileImage = uploadedImageUrl || "/uploads/default.png";
 
-  const cookies = document.cookie.split("; ").reduce((acc, current) => {
-  const [key, value] = current.split("=");
-    acc[key] = value;
-    return acc;
-  }, {});
+  //  S3 파일 key 쿠키에서 불러오기
+  const cookies = Object.fromEntries(document.cookie.split("; ").map(v => v.split("=")));
+  const profileImageKey = cookies["profileImageKey"] || null;
 
+  //  termsAgreement 쿠키 불러오기 (약관 동의 내용 포함)
   let termsAgreement = null;
   if (cookies.termsAgreement) {
-    termsAgreement = JSON.parse(decodeURIComponent(cookies.termsAgreement));
-    // LocalDateTime 파싱 호환용으로 "Z" 제거
-    if (termsAgreement.agreeTime) {
-      termsAgreement.agreeTime = termsAgreement.agreeTime.replace("Z", "");
+    try {
+      termsAgreement = JSON.parse(decodeURIComponent(cookies.termsAgreement));
+      // LocalDateTime 호환용 Z 제거
+      if (termsAgreement.agreeTime) {
+        termsAgreement.agreeTime = termsAgreement.agreeTime.replace("Z", "");
+      }
+    } catch (e) {
+      console.warn("termsAgreement 파싱 오류:", e);
     }
   }
+
   const requestBody = {
     email,
     password,
     confirmPassword,
     nickname,
-    profileImage,
-    termsAgreement
+    profileImage: profileImageKey,
+    termsAgreement,
   };
 
-
   try {
-      const response = await fetch(`${window.BACKEND_URL}/api/users/sign-up`, {
+    const res = await fetch(`${window.BACKEND_URL}/api/users/sign-up`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     });
 
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.message || "회원가입 실패");
+      return;
+    }
 
+    alert("회원가입 성공!");
+    // 업로드 이미지 쿠키 제거
+    document.cookie = "profileImageKey=; Max-Age=0; path=/;";
+    // termsAgreement 쿠키도 필요 시 제거
+    document.cookie = "termsAgreement=; Max-Age=0; path=/;";
+    location.href = "/login";
 
-    const contentType = response.headers.get("content-type");
-
-    //  JSON 형태인지 아닌지 먼저 확인
-    if (contentType && contentType.includes("application/json")) {
-      const responseData = await response.json();
-
-      if (response.ok) {
-        alert("회원가입 성공!");
-        location.href = "/login";
-      } else {
-        alert(responseData.message || "회원가입 중 오류가 발생했습니다.");
-      }
-    } 
   } catch (error) {
-    console.error(" 네트워크 오류 발생:", error);
+    console.error("회원가입 요청 중 오류:", error);
     alert("서버 요청 중 오류가 발생했습니다.");
   }
 });
+
 
 
 /**
