@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 // ---------------------------------------------------------
 app.get("/env.js", (req, res) => {
   res.type("application/javascript");
-  res.send(`window.BACKEND_URL = "${BACKEND_URL}";`);
+  res.send(`window.BACKEND_URL = "http://10.0.3.9:8080"; `);
 });
 
 // ---------------------------------------------------------
@@ -37,7 +37,7 @@ app.get("/login", (_, res) =>
 );
 
 // ✅ 백엔드 thymeleaf 페이지로 리다이렉트
-app.get("/signup", (_, res) => res.redirect(`${BACKEND_URL}/terms/signup`));
+app.get("/signup", (_, res) => res.redirect(`http://10.0.3.9:8080/terms/signup`));
 
 // ✅ 다음 단계 signup.html
 app.get("/signup-input", (_, res) =>
