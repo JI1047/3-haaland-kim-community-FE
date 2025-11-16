@@ -28,8 +28,7 @@ profileFileInput.addEventListener("change", async (e) => {
     //  2) Presigned URL로 직접 업로드 (브라우저 → S3)
     const uploadRes = await fetch(url, {
       method: "PUT",
-      headers: { "Content-Type": file.type, 
-           "x-amz-acl": "public-read"   
+      headers: { "Content-Type": file.type 
       },
       body: file,
     });
