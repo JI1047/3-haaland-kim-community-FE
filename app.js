@@ -37,7 +37,7 @@ app.get("/login", (_, res) =>
 );
 
 // ✅ 백엔드 thymeleaf 페이지로 리다이렉트
-app.get("/signup", (_, res) => res.redirect(`http://community-alb-196644401.ap-northeast-2.elb.amazonaws.com/terms/signup`));
+app.get("/signup", (_, res) => res.redirect(`http://community-alb-196644401.ap-northeast-2.elb.amazonaws.com/api/terms/signup`));
 
 // ✅ 다음 단계 signup.html
 app.get("/signup-input", (_, res) =>
