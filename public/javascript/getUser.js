@@ -23,11 +23,14 @@ async function initPage() {
       return;
     }
 
+    const S3_BASE_URL = "https://haaland-bucket.s3.ap-northeast-2.amazonaws.com/";
     const data = await response.json();
     document.getElementById("email").textContent = data.email;
     document.getElementById("nickname").textContent = data.nickname;
-    document.querySelector(".profile-image img").src = data.profileImage || "/haaland.jpeg";
-
+    document.querySelector(".profile-image img").src =
+      data.profileImage
+        ? `${S3_BASE_URL}${data.profileImage}`
+        : "/user.png";
   } catch (error) {
     console.error("에러:", error);
   }
