@@ -27,10 +27,17 @@ async function initPage() {
     const data = await response.json();
     document.getElementById("email").textContent = data.email;
     document.getElementById("nickname").textContent = data.nickname;
-    document.querySelector(".profile-image img").src =
-      data.profileImage
-        ? `${S3_BASE_URL}${data.profileImage}`
-        : "/user.png";
+    const imgElement = document.querySelector(".profile-image img");
+
+    if (!data.profileImage) {
+      imgElement.src = "/user.png";
+    } else if (data.profileImage.startsWith("http")) {
+      // 절대 URL이면 그대로 사용
+      imgElement.src = data.profileImage;
+    } else {
+      // 상대 경로이면 S3 BASE URL 붙이기
+      imgElement.src = `${S3_BASE_URL}${data.profileImage}`;
+    }
   } catch (error) {
     console.error("에러:", error);
   }
