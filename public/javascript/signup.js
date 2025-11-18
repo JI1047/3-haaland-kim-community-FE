@@ -18,30 +18,25 @@ profileFileInput.addEventListener("change", async (e) => {
   previewImage.src = URL.createObjectURL(file);
 
   try {
-    //  1) Presigned URL 요청 (백엔드 → AWS S3 인증용 URL 발급)
-    const res = await fetch(
-      `${window.BACKEND_URL}/api/s3/presigned?fileName=${encodeURIComponent(file.name)}`
-    );
-    if (!res.ok) throw new Error("Presigned URL 요청 실패");
-    const { url, key, fileName } = await res.json();
+    // 🔥 람다 API 게이트웨이 URL
+    const LAMBDA_UPLOAD_URL = "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
 
-    //  2) Presigned URL로 직접 업로드 (브라우저 → S3)
-    const uploadRes = await fetch(url, {
-      method: "PUT",
-      headers: { "Content-Type": file.type
-      },
-      body: file,
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
+      method: "POST",
+      body: formData
     });
-    if (!uploadRes.ok) throw new Error("S3 업로드 실패");
 
-    // 3) 업로드 성공 시 Key 저장 (DB 저장용)
-    uploadedFileKey = key;
+    if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
 
-    // 4) 쿠키에 파일 key 저장 (회원가입 시 백엔드 전달용)
-    document.cookie = `profileImageKey=${uploadedFileKey}; path=/; max-age=${60 * 30};`;
+    const lambdaJson = await lambdaRes.json();
+    uploadedImageUrl = lambdaJson.data.filePath;   // 람다가 반환한 S3 URL 저장
+
+    document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
 
     alert("이미지 업로드 완료");
-
   } catch (error) {
     console.error("이미지 업로드 중 오류:", error);
     alert("이미지 업로드 실패");
@@ -125,7 +120,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
 
   //  S3 파일 key 쿠키에서 불러오기
   const cookies = Object.fromEntries(document.cookie.split("; ").map(v => v.split("=")));
-  const profileImageKey = cookies["profileImageKey"] || null;
+  const profileImageUrl = cookies["profileImageUrl"] || null;
 
   //  termsAgreement 쿠키 불러오기 (약관 동의 내용 포함)
   let termsAgreement = null;
@@ -146,7 +141,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     password,
     confirmPassword,
     nickname,
-    profileImage: profileImageKey,
+    profileImage: profileImageUrl,
     termsAgreement,
   };
 
