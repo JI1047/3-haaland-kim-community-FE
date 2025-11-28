@@ -5,6 +5,9 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
+// 🔥 1. 정적 파일 먼저!!!
+app.use(express.static(path.join(__dirname, "public")));
+
 // EC2 환경변수에서 BACKEND_URL 읽기 (run-all.sh에서 세팅됨)
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 
