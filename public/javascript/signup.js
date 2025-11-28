@@ -18,12 +18,14 @@ profileFileInput.addEventListener("change", async (e) => {
   previewImage.src = URL.createObjectURL(file);
 
   try {
-    // 🔥 람다 API 게이트웨이 URL
+    // 람다 API 게이트웨이 URL
     const LAMBDA_UPLOAD_URL = "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
 
+    // 업로드할 파일을 FormData 객체에 담아 멀티파트 요청 형태로 생성
     const formData = new FormData();
     formData.append("file", file);
 
+    // API Gateway → Lambda로 이미지 업로드 요청 전송
     const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
       method: "POST",
       body: formData
@@ -31,9 +33,13 @@ profileFileInput.addEventListener("change", async (e) => {
 
     if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
 
+    // Lambda에서 반환한 S3 경로(JSON) 파싱
     const lambdaJson = await lambdaRes.json();
-    uploadedImageUrl = lambdaJson.data.filePath;   // 람다가 반환한 S3 URL 저장
+    // 업로드된 이미지의 S3 상대 경로(filePath)를 변수에 저장
+    uploadedImageUrl = lambdaJson.data.filePath;
 
+    // 사용자가 회원가입 페이지에서 여러 번 이미지를 변경할 수 있으므로
+    // 업로드된 이미지 경로를 쿠키에 저장하여 상태를 유지
     document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
 
     alert("이미지 업로드 완료");

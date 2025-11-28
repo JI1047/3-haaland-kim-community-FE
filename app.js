@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 // ---------------------------------------------------------
 app.get("/env.js", (req, res) => {
   res.type("application/javascript");
-  res.send(`window.BACKEND_URL = "http://community-alb-196644401.ap-northeast-2.elb.amazonaws.com";`);
+  res.send(`window.BACKEND_URL = "https://haaland-community.site";`);
 });
 
 // ---------------------------------------------------------
@@ -22,6 +22,10 @@ app.get("/env.js", (req, res) => {
 app.use(express.static(path.join(__dirname, "public")));
 
 
+// ALB Health Check 용 헬스체크 엔드포인트
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 // ---------------------------------------------------------
 // HTML 라우팅
@@ -37,7 +41,10 @@ app.get("/login", (_, res) =>
 );
 
 // ✅ 백엔드 thymeleaf 페이지로 리다이렉트
-app.get("/signup", (_, res) => res.redirect(`http://community-alb-196644401.ap-northeast-2.elb.amazonaws.com/api/terms/signup`));
+app.get("/signup", (_, res) => {
+  res.redirect("https://haaland-community.site/api/terms/signup");
+});
+
 
 // ✅ 다음 단계 signup.html
 app.get("/signup-input", (_, res) =>
