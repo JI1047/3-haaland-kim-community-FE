@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ALB Health Check 용 헬스체크 엔드포인트
 app.get("/health", (req, res) => {
-  res.status(200).send("OK");
+  res.sendFile(path.join(__dirname, "public/user.png"));
 });
 
 // ---------------------------------------------------------
