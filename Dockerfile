@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # 컨테이너 실행 명령어
-CMD ["node", "app.js"]
+CMD ["node", "server.js"]
