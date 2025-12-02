@@ -52,10 +52,8 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} << 'EOF'
             ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} << 'INNER'
-              bash -s << 'EOC'
-                cd /home/ubuntu/frontend
-                docker compose pull
-                docker compose up -d
-              EOC
+              cd /home/ubuntu/frontend
+              docker compose pull
+              docker compose up -d
             INNER
           EOF
