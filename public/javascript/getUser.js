@@ -21,7 +21,7 @@ async function initPage() {
       alert("로그인이 필요합니다.");
       location.href = "/login";
       return;
-    }
+    } 
 
     const S3_BASE_URL = "https://haaland-bucket.s3.ap-northeast-2.amazonaws.com/";
     const data = await response.json();

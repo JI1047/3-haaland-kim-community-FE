@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Prepare SSH Key for NAT
+      - name: Prepare SSH Key for NAT (KTB_Cloud.pem)
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -51,10 +51,11 @@ jobs:
       - name: Deploy via NAT to Private FE EC2
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} << 'EOF'
-            ssh -i /home/ubuntu/private-fe.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} << 'INNER'
+            ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${PRIVATE_FE_IP} << 'INNER'
               cd /home/ubuntu/frontend
               docker compose pull
               docker compose up -d
             INNER
           EOF
-
+        env:
+          PRIVATE_FE_IP: ${{ secrets.PRIVATE_FE_IP }}
