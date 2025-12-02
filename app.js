@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ALB Health Check 용 헬스체크 엔드포인트
 app.get("/health", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/user.png"));
+  res.status(200).send("OK");
 });
 
 // ---------------------------------------------------------
@@ -73,9 +73,6 @@ app.get("/updatePost", (_, res) =>
   res.sendFile(path.join(__dirname, "public/html/updatePost.html"))
 );
 
-// ---------------------------------------------------------
-// 서버 실행
-// ---------------------------------------------------------
-app.listen(PORT, () => {
-  console.log(`🚀 Express server running on port ${PORT}`);
-});
+
+
+module.exports = app;
