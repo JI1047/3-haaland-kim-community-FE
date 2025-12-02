@@ -53,11 +53,11 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} << 'EOF'
             echo ">>> Connected to NAT"
 
-            ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} << 'INNER'
+            ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} << INNER
               echo ">>> Connected to Private FE EC2"
 
               cd /home/ubuntu/frontend
               docker compose pull
               docker compose up -d
-            INNER
+          INNER
           EOF
