@@ -23,7 +23,7 @@ app.get("/env.js", (req, res) => {
 // 정적 파일 서빙
 // ---------------------------------------------------------
 app.use(express.static(path.join(__dirname, "public")));
-
+ 
 
 // ALB Health Check 용 헬스체크 엔드포인트
 app.get("/health", (req, res) => {
