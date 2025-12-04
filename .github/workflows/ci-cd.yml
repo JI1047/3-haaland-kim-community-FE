@@ -1,37 +1,49 @@
-
+# FE CI/CD 파이프라인
+# main branch push 및 pull request시 이미지 빌드/푸시
+# FE Ec2 인스턴스가 private subnet에 있기 때문에 
+# NAT Instance(Public Subnet)을 타고 들어가서 배포 자동화
+# main 브랜치 push -> nat 인스턴스 ssh로그인 -> private fe(private subnet) ssh로그인 후 배포
 name: FE CI/CD
 
+# main 브랜치에 push되거나 pr 생성될 때 실행
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
+
+# fe 도커이미지 build & push
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
 
+    # github 저장소 코드 가져오기
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+    # Node.js 환경 준비
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20.x
 
+    # npm install tlfgod
       - name: Install dependencies
         run: npm install
 
+    # mock test
       - name: Mock Test (health only)
         run: echo "OK"
 
+    # Docker hub 로그인
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-
+    # Docker 이미지 빌드 & Docker Hub로 Push
       - name: Build and Push Docker Image
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/board-fe:latest .
@@ -41,12 +53,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # (1) NAT 서버에 SSH 접속 준비
+    # - GitHub → NAT 인스턴스 서버 연결
       - name: Prepare SSH Key for NAT (KTB_Cloud.pem)
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          
+   # (2) NAT 서버 → Private FE EC2로 SSH 터널링을 통해 내부 배포 실행
+    # - Private Subnet의 FE EC2는 GitHub Actions에서 직접 접근 불가
+    # - NAT 인스턴스 서버를 중계로 사용해 내부 인스턴스에 접속
+    # - 최신 FE Docker 이미지를 pull 후 docker compose up -d로 재배포
+
       - name: Deploy via NAT to Private FE EC2
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} \
