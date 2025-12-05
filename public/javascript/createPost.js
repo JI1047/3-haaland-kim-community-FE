@@ -1,4 +1,5 @@
 import { jwtGuard } from "../common/jwt.js";
+import { showToast } from "../common/toast.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -36,17 +37,14 @@ function validateTitle(title) {
 function initImageUpload() {
   const uploadButton = document.querySelector(".submit");
 
-  // 숨겨진 input 생성
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
   fileInput.style.display = "none";
   document.body.appendChild(fileInput);
 
-  // 버튼 클릭 → 파일 선택창 열기
   uploadButton.addEventListener("click", () => fileInput.click());
 
-  // 파일 선택 → Lambda Presigned 업로드
   fileInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -68,13 +66,12 @@ function initImageUpload() {
       const json = await lambdaRes.json();
       const uploadedImageUrl = json.data.filePath;
 
-      // 쿠키 저장
       document.cookie = `postImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
 
-      alert("이미지 업로드 완료!");
+      showToast("📸 이미지 업로드 완료!");
     } catch (error) {
       console.error("이미지 업로드 오류:", error);
-      alert("이미지 업로드 실패");
+      showToast("🚨 이미지 업로드 실패!");
     }
   });
 }
@@ -89,7 +86,7 @@ function initCreateButton() {
     const text = document.getElementById("text").value.trim();
 
     if (!title || !text) {
-      alert("제목과 내용을 모두 입력해주세요.");
+      showToast("⚠️ 제목과 내용을 모두 입력해주세요!");
       return;
     }
 
@@ -106,15 +103,15 @@ function initCreateButton() {
       });
 
       if (response.ok) {
-        alert("게시물 생성 성공!");
+        showToast("🎉 게시물 생성 성공!");
         document.cookie = "postImageUrl=; Max-Age=0; path=/";
-        location.href = "/getPostList";
+        setTimeout(() => (location.href = "/getPostList"), 800);
       } else {
-        alert("게시물 생성 실패. 다시 시도해주세요.");
+        showToast("❌ 게시물 생성 실패. 다시 시도해주세요!");
       }
     } catch (error) {
       console.error("게시물 생성 오류:", error);
-      alert("서버 요청 중 오류가 발생했습니다.");
+      showToast("🚨 서버 요청 중 오류 발생!");
     }
   });
 }
