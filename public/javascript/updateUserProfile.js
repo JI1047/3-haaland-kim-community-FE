@@ -27,6 +27,7 @@ async function initUserProfile() {
     const data = await res.json();
 
     document.getElementById("email").textContent = data.email;
+    document.getElementById("nickname").value = data.nickname;
 
     const img = document.querySelector(".profile-image img");
     img.src = data.profileImage || "/haaland.jpeg";
