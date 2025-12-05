@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadPostDetail();
   initTitleValidation();
-  initImageUpload();   // ← 회원가입 방식으로 변경됨
+  initImageUpload();   // 버튼 클릭 방식 이미지 업로드 적용
   initUpdateButton();
 });
 
@@ -33,8 +33,10 @@ async function loadPostDetail() {
     document.getElementById("title").value = data.title;
     document.getElementById("text").value = data.text;
 
-    const preview = document.getElementById("previewImage");
-    preview.src = data.postImage || "/default.png";
+    // 기존 게시물 이미지 → 쿠키에 미리 저장 (수정 안 하면 이거 쓸 수 있게)
+    if (data.postImage) {
+      document.cookie = `postImageUrl=${data.postImage}; path=/; max-age=${60 * 30}`;
+    }
 
   } catch (err) {
     console.error("게시물 불러오기 실패:", err);
@@ -42,10 +44,10 @@ async function loadPostDetail() {
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드 (회원가입과 동일한 방식)
+ * 2. 이미지 업로드 (버튼 클릭 방식)
  * -----------------------------------------------------------*/
 function initImageUpload() {
-  const previewImage = document.getElementById("previewImage");
+  const uploadBtn = document.querySelector(".submit");
 
   // 숨겨진 파일 input 생성
   const fileInput = document.createElement("input");
@@ -54,15 +56,13 @@ function initImageUpload() {
   fileInput.style.display = "none";
   document.body.appendChild(fileInput);
 
-  // 이미지 클릭하면 input 열기
-  previewImage.addEventListener("click", () => fileInput.click());
+  // 버튼 클릭 → 파일 선택창 열기
+  uploadBtn.addEventListener("click", () => fileInput.click());
 
-  // 파일 선택 시 Lambda 업로드
+  // 파일 선택 → Lambda 업로드 진행
   fileInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    previewImage.src = URL.createObjectURL(file); // 미리보기 적용
 
     try {
       const LAMBDA_UPLOAD_URL =
@@ -78,16 +78,16 @@ function initImageUpload() {
 
       if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
 
-      const lambdaJson = await lambdaRes.json();
-      const uploadedUrl = lambdaJson.data.filePath;
+      const json = await lambdaRes.json();
+      const uploadedUrl = json.data.filePath;
 
-      // 쿠키 저장
+      // 업로드 성공한 이미지 URL을 쿠키에 저장
       document.cookie = `postImageUrl=${uploadedUrl}; path=/; max-age=${60 * 30}`;
 
       alert("이미지 업로드 완료!");
 
-    } catch (error) {
-      console.error("이미지 업로드 오류:", error);
+    } catch (err) {
+      console.error("이미지 업로드 오류:", err);
       alert("이미지 업로드 실패");
     }
   });
