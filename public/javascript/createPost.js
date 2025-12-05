@@ -1,10 +1,9 @@
 import { jwtGuard } from "../common/jwt.js";
 import { setupImageUploader } from "/common/imageUploader.js";
 
-
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await jwtGuard(); // 로그인 여부 확인
+    await jwtGuard(); 
     initTitleValidation();
     initImageUpload();
     initCreateButton();
@@ -14,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* -----------------------------------------------------------
- * ✅ 1. 제목 입력 검증
+ * 1. 제목 검증
  * -----------------------------------------------------------*/
 function initTitleValidation() {
   document.getElementById("title").addEventListener("input", (e) => {
@@ -33,23 +32,25 @@ function validateTitle(title) {
 }
 
 /* -----------------------------------------------------------
- * ✅ 2. 이미지 업로드 로직 (회원 프로필과 동일)
+ * 2. 이미지 업로드
  * -----------------------------------------------------------*/
-setupImageUploader({
-  previewSelector: "#profilePreview",
-  inputSelector: "#fileInput",
-  onUploaded: (url) => {
-    document.cookie = `postImageUrl=${url}; path=/; max-age=${60 * 30}`;
-  }
-});
-
-
+function initImageUpload() {
+  setupImageUploader({
+    previewSelector: "#profilePreview",
+    inputSelector: "#fileInput",
+    cookieKey: "postImageUrl",
+    onUploaded: (url) => {
+      document.cookie = `postImageUrl=${url}; path=/; max-age=${60 * 30}`;
+    }
+  });
+}
 
 /* -----------------------------------------------------------
- * ✅ 3. 게시물 생성 요청
+ * 3. 게시물 생성 요청
  * -----------------------------------------------------------*/
 function initCreateButton() {
   document.getElementById("createPostButton").addEventListener("click", async () => {
+
     const title = document.getElementById("title").value.trim();
     const text = document.getElementById("text").value.trim();
 
@@ -58,13 +59,12 @@ function initCreateButton() {
       return;
     }
 
-    // ✅ 쿠키에 저장된 이미지 URL 불러오기
     const postImage = getCookie("postImageUrl") || null;
 
     const requestBody = { title, text, postImage };
 
     try {
-        const response = await fetch(`${window.BACKEND_URL}/api/posts/create`, {
+      const response = await fetch(`${window.BACKEND_URL}/api/posts/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -73,7 +73,6 @@ function initCreateButton() {
 
       if (response.ok) {
         alert("게시물 생성 성공!");
-        // 쿠키 정리
         document.cookie = "postImageUrl=; Max-Age=0; path=/";
         location.href = "/getPostList";
       } else {
@@ -86,9 +85,6 @@ function initCreateButton() {
   });
 }
 
-/* -----------------------------------------------------------
- * ✅ 4. 쿠키 유틸리티
- * -----------------------------------------------------------*/
 function getCookie(name) {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? match[2] : null;
