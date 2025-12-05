@@ -1,19 +1,13 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+
+FROM node:20-alpine
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
-
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
 
-FROM nginx:alpine
-
-RUN rm -rf /usr/share/nginx/html/*
-
-COPY --from=builder /app/build /usr/share/nginx/html
-
-# 기본 포트
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+CMD ["node", "app.js"]
