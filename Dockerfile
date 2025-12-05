@@ -1,20 +1,19 @@
-# Node.js LTS 버전 사용
-FROM node:22
-
-# 작업 디렉토리 설정
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# 패키지 설치를 위한 package.json 복사
 COPY package*.json ./
-
-# 종속성 설치
 RUN npm install
 
-# 앱 소스코드 복사
 COPY . .
+RUN npm run build
 
-# 컨테이너가 사용할 포트 설정
-EXPOSE 3000
+FROM nginx:alpine
 
-# 컨테이너 실행 명령어
-CMD ["node", "server.js"]
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# 기본 포트
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
