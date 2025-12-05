@@ -1,9 +1,8 @@
 import { jwtGuard } from "../common/jwt.js";
-import { setupImageUploader } from "/common/imageUploader.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await jwtGuard(); 
+    await jwtGuard();
     initTitleValidation();
     initImageUpload();
     initCreateButton();
@@ -32,15 +31,48 @@ function validateTitle(title) {
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드
+ * 2. 이미지 업로드 (signup.js 방식 그대로 적용)
  * -----------------------------------------------------------*/
 function initImageUpload() {
-  setupImageUploader({
-    previewSelector: "#profilePreview",
-    inputSelector: "#fileInput",
-    cookieKey: "postImageUrl",
-    onUploaded: (url) => {
-      document.cookie = `postImageUrl=${url}; path=/; max-age=${60 * 30}`;
+  const fileInput = document.getElementById("fileInput");
+  const previewImage = document.getElementById("profilePreview");
+  let uploadedImageUrl = null;
+
+  // 이미지 클릭 → 파일 선택창 열기
+  previewImage.addEventListener("click", () => fileInput.click());
+
+  // 파일 선택 → Lambda Presigned 업로드
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // 미리보기
+    previewImage.src = URL.createObjectURL(file);
+
+    try {
+      const LAMBDA_UPLOAD_URL =
+        "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
+
+      const json = await lambdaRes.json();
+      uploadedImageUrl = json.data.filePath;
+
+      // 쿠키 저장
+      document.cookie = `postImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
+
+      alert("이미지 업로드 완료!");
+    } catch (error) {
+      console.error("이미지 업로드 중 오류:", error);
+      alert("이미지 업로드 실패");
     }
   });
 }
@@ -49,43 +81,54 @@ function initImageUpload() {
  * 3. 게시물 생성 요청
  * -----------------------------------------------------------*/
 function initCreateButton() {
-  document.getElementById("createPostButton").addEventListener("click", async () => {
+  document
+    .getElementById("createPostButton")
+    .addEventListener("click", async () => {
+      const title = document.getElementById("title").value.trim();
+      const text = document.getElementById("text").value.trim();
 
-    const title = document.getElementById("title").value.trim();
-    const text = document.getElementById("text").value.trim();
-
-    if (!title || !text) {
-      alert("제목과 내용을 모두 입력해주세요.");
-      return;
-    }
-
-    const postImage = getCookie("postImageUrl") || null;
-
-    const requestBody = { title, text, postImage };
-
-    try {
-      const response = await fetch(`${window.BACKEND_URL}/api/posts/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        alert("게시물 생성 성공!");
-        document.cookie = "postImageUrl=; Max-Age=0; path=/";
-        location.href = "/getPostList";
-      } else {
-        alert("게시물 생성 실패. 다시 시도해주세요.");
+      if (!title || !text) {
+        alert("제목과 내용을 모두 입력해주세요.");
+        return;
       }
-    } catch (error) {
-      console.error("게시물 생성 오류:", error);
-      alert("서버 요청 중 오류가 발생했습니다.");
-    }
-  });
+
+      // 쿠키에서 이미지 URL 불러오기
+      const postImage = getCookie("postImageUrl") || null;
+
+      const requestBody = { title, text, postImage };
+
+      try {
+        const response = await fetch(
+          `${window.BACKEND_URL}/api/posts/create`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          alert("게시물 생성 성공!");
+          // 쿠키 삭제
+          document.cookie = "postImageUrl=; Max-Age=0; path=/";
+          location.href = "/getPostList";
+        } else {
+          alert("게시물 생성 실패. 다시 시도해주세요.");
+        }
+      } catch (error) {
+        console.error("게시물 생성 오류:", error);
+        alert("서버 요청 중 오류가 발생했습니다.");
+      }
+    });
 }
 
+/* -----------------------------------------------------------
+ * 4. 쿠키 유틸
+ * -----------------------------------------------------------*/
 function getCookie(name) {
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  const match = document.cookie.match(
+    new RegExp("(^| )" + name + "=([^;]+)")
+  );
   return match ? match[2] : null;
 }
