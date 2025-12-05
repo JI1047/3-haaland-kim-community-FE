@@ -1,5 +1,3 @@
-import { setupImageUploader } from "/common/imageUploader.js";
-
 let postId;
 
 /* -----------------------------------------------------------
@@ -9,14 +7,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParam = new URLSearchParams(window.location.search);
   postId = urlParam.get("id");
 
-  await loadPostDetail();     // 기존 게시물 정보
-  initTitleValidation();      // 제목 검증
-  initImageUpload();          // 이미지 업로드 통합 적용
-  initUpdateButton();         // 수정 요청
+  await loadPostDetail();
+  initTitleValidation();
+  initImageUpload();   // ← 회원가입 방식으로 변경됨
+  initUpdateButton();
 });
 
 /* -----------------------------------------------------------
- *  게시물 정보 불러오기
+ * 게시물 정보 불러오기
  * -----------------------------------------------------------*/
 async function loadPostDetail() {
   try {
@@ -35,11 +33,8 @@ async function loadPostDetail() {
     document.getElementById("title").value = data.title;
     document.getElementById("text").value = data.text;
 
-    // 이미지 미리보기 적용 (있으면)
     const preview = document.getElementById("previewImage");
-    if (data.postImage) {
-      preview.src = data.postImage;
-    }
+    preview.src = data.postImage || "/default.png";
 
   } catch (err) {
     console.error("게시물 불러오기 실패:", err);
@@ -47,36 +42,56 @@ async function loadPostDetail() {
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드 로직 — 공통 모듈 적용
+ * 2. 이미지 업로드 (회원가입과 동일한 방식)
  * -----------------------------------------------------------*/
 function initImageUpload() {
-  setupImageUploader({
-    previewSelector: "#previewImage",
-    inputSelector: "#fileInputHidden",
-    cookieKey: "postImageUrl",
+  const previewImage = document.getElementById("previewImage");
 
-    onUploaded: (url) => {
-      console.log("게시물 이미지 업로드 완료:", url);
+  // 숨겨진 파일 input 생성
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+  document.body.appendChild(fileInput);
+
+  // 이미지 클릭하면 input 열기
+  previewImage.addEventListener("click", () => fileInput.click());
+
+  // 파일 선택 시 Lambda 업로드
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    previewImage.src = URL.createObjectURL(file); // 미리보기 적용
+
+    try {
+      const LAMBDA_UPLOAD_URL =
+        "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
+
+      const lambdaJson = await lambdaRes.json();
+      const uploadedUrl = lambdaJson.data.filePath;
+
+      // 쿠키 저장
+      document.cookie = `postImageUrl=${uploadedUrl}; path=/; max-age=${60 * 30}`;
+
+      alert("이미지 업로드 완료!");
+
+    } catch (error) {
+      console.error("이미지 업로드 오류:", error);
+      alert("이미지 업로드 실패");
     }
   });
-
-  // 이미지 클릭 시 파일 선택창 열기
-  document.getElementById("previewImage").addEventListener("click", () => {
-    document.getElementById("fileInputHidden").click();
-  });
 }
-
-/* 숨겨진 input이 없다면 자동 생성 */
-(function appendHiddenInput() {
-  if (!document.getElementById("fileInputHidden")) {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.id = "fileInputHidden";
-    input.style.display = "none";
-    document.body.appendChild(input);
-  }
-})();
 
 /* -----------------------------------------------------------
  * 3. 제목 검증
@@ -107,7 +122,6 @@ function initUpdateButton() {
 
     if (!validateTitle(title)) return;
 
-    // 업로드된 이미지 URL (없으면 기존 URL 그대로 보내도록 null 처리)
     const postImageUrl = getCookie("postImageUrl") || null;
 
     const requestBody = { title, text, postImage: postImageUrl };
@@ -122,7 +136,7 @@ function initUpdateButton() {
 
       if (res.ok) {
         alert("게시글 수정 성공!");
-        document.cookie = "postImageUrl=; Max-Age=0; path=/"; // 쿠키 삭제
+        document.cookie = "postImageUrl=; Max-Age=0; path=/";
         location.href = `/getPost?id=${postId}`;
       } else {
         alert("게시글 수정 실패. 다시 시도해주세요.");
