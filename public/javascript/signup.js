@@ -5,7 +5,6 @@ import { setupImageUploader } from "/common/imageUploader.js";
  * -----------------------------------------------------------*/
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await jwtGuard();
 
     document.getElementById("previewImage").addEventListener("click", () => {
     document.getElementById("profileFile").click();
