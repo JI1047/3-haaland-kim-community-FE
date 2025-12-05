@@ -1,51 +1,18 @@
+import { setupImageUploader } from "/common/imageUploader.js";
+
 const profileFileInput = document.getElementById("profileFile");
 const previewImage = document.getElementById("previewImage");
 let uploadedImageUrl = null;
 
-/**
- * 이미지 클릭 시 파일 선택창 열기
- */
-previewImage.addEventListener("click", () => profileFileInput.click());
+// 공통 이미지 업로더 초기화
+setupImageUploader({
+  previewSelector: "#previewImage",
+  inputSelector: "#profileFile",
+  onUploaded: (url) => {
+    uploadedImageUrl = url;
 
-/**
- * 파일 선택 후 Presigned URL을 통해 S3에 직접 업로드
- */
-profileFileInput.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  // 미리보기 표시
-  previewImage.src = URL.createObjectURL(file);
-
-  try {
-    // 람다 API 게이트웨이 URL
-    const LAMBDA_UPLOAD_URL = "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
-
-    // 업로드할 파일을 FormData 객체에 담아 멀티파트 요청 형태로 생성
-    const formData = new FormData();
-    formData.append("file", file);
-
-    // API Gateway → Lambda로 이미지 업로드 요청 전송
-    const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
-      method: "POST",
-      body: formData
-    });
-
-    if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
-
-    // Lambda에서 반환한 S3 경로(JSON) 파싱
-    const lambdaJson = await lambdaRes.json();
-    // 업로드된 이미지의 S3 상대 경로(filePath)를 변수에 저장
-    uploadedImageUrl = lambdaJson.data.filePath;
-
-    // 사용자가 회원가입 페이지에서 여러 번 이미지를 변경할 수 있으므로
-    // 업로드된 이미지 경로를 쿠키에 저장하여 상태를 유지
-    document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
-
-    alert("이미지 업로드 완료");
-  } catch (error) {
-    console.error("이미지 업로드 중 오류:", error);
-    alert("이미지 업로드 실패");
+    // 기존처럼 쿠키 저장도 그대로 가능
+    document.cookie = `profileImageUrl=${url}; path=/; max-age=${60 * 30}`;
   }
 });
 

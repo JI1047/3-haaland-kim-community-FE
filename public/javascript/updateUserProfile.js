@@ -1,12 +1,13 @@
 import { jwtGuard } from "../common/jwt.js";
+import { setupImageUploader } from "/common/imageUploader.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     await jwtGuard(); // 인증 확인
-    await initUserProfile(); // 유저 정보 불러오기
-    initImageUpload(); // 이미지 업로드 이벤트 초기화
+    await initUserProfile(); // 유저 정보 로드
     initNicknameValidation(); // 닉네임 검증
-    initUpdateButton(); // 회원정보 수정
+    initImageUpload(); // 이미지 업로드
+    initUpdateButton(); // 수정 버튼
   } catch (e) {
     console.warn("인증 실패:", e.message);
   }
@@ -17,75 +18,66 @@ document.addEventListener("DOMContentLoaded", async () => {
  * -----------------------------------------------------------*/
 async function initUserProfile() {
   try {
-      const res = await fetch(`${window.BACKEND_URL}/api/users`, {
+    const res = await fetch(`${window.BACKEND_URL}/api/users`, {
       method: "GET",
       credentials: "include",
     });
 
     if (!res.ok) throw new Error("유저 정보 요청 실패");
-
     const data = await res.json();
-    document.querySelector(".profile-image img").src =
-      data.profileImage || "/haaland.jpeg";
+
+    // email 표시
     document.getElementById("email").textContent = data.email;
+
+    // 프로필 이미지 적용
+    const img = document.querySelector(".profile-image img");
+    img.src = data.profileImage || "/haaland.jpeg";
+
   } catch (err) {
     console.error("유저 정보 불러오기 실패:", err);
   }
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 클릭 → 파일 선택 → 서버 업로드
+ * 2. 공통 이미지 업로드 기능으로 적용
  * -----------------------------------------------------------*/
 function initImageUpload() {
-  const image = document.querySelector(".profile-image img");
-
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
-
-  // 클릭 시 파일 선택창 열기
-  image.addEventListener("click", () => fileInput.click());
-
-  // 파일 선택 후 업로드
-  fileInput.addEventListener("change", async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // 미리보기 즉시 표시
-    const previewUrl = URL.createObjectURL(file);
-    image.src = previewUrl;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-        const response = await fetch(`${window.BACKEND_URL}/api/users/profile/image`, { 
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("이미지 업로드 실패");
-
-      const fileName = await response.text();
-      const uploadedImageUrl = `${window.BACKEND_URL}/uploads/${fileName}`;
-
-      document.cookie = `profileImageUrl=${uploadedImageUrl}; path=/`;
-
-    } catch (error) {
-      console.error(error);
-      alert("이미지 업로드 중 오류 발생");
+  setupImageUploader({
+    previewSelector: ".profile-image img",
+    inputSelector: "#fileInputHidden",  // 숨겨진 input
+    cookieKey: "profileImageUrl",
+    onUploaded: (url) => {
+      // 미리보기는 공통 모듈이 알아서 처리함
+      console.log("프로필 업로드 완료:", url);
     }
   });
+
+  // 이미지 클릭 시 input 열기
+  const profileImg = document.querySelector(".profile-image img");
+  profileImg.addEventListener("click", () => {
+    document.querySelector("#fileInputHidden").click();
+  });
 }
+
+/* HTML에 숨겨진 input 추가 (단 1회) */
+(function appendHiddenInput() {
+  if (!document.getElementById("fileInputHidden")) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.id = "fileInputHidden";
+    input.style.display = "none";
+    document.body.appendChild(input);
+  }
+})();
 
 /* -----------------------------------------------------------
  *  3. 닉네임 검증
  * -----------------------------------------------------------*/
 function initNicknameValidation() {
-  const nicknameInput = document.getElementById("nickname");
-  nicknameInput.addEventListener("input", (e) => validateNickname(e.target.value));
+  document.getElementById("nickname").addEventListener("input", (e) => {
+    validateNickname(e.target.value);
+  });
 }
 
 function validateNickname(nickname) {
@@ -109,38 +101,44 @@ function validateNickname(nickname) {
 }
 
 /* -----------------------------------------------------------
- *  4. 회원정보 수정 (닉네임 + 쿠키에 저장된 이미지 URL)
+ *  4. 회원정보 수정 요청
  * -----------------------------------------------------------*/
 function initUpdateButton() {
-  const updateButton = document.getElementById("updateButton");
-
-  updateButton.addEventListener("click", async () => {
+  document.getElementById("updateButton").addEventListener("click", async () => {
     const nickname = document.getElementById("nickname").value.trim();
+
     if (!validateNickname(nickname)) return;
 
-    // ✅ 쿠키에 저장된 프로필 이미지 URL 가져오기
-    const profileImageUrl = getCookie("profileImageUrl") || "www.s3.url";
+    const profileImageUrl = getCookie("profileImageUrl") || null;
 
-    const requestBody = { nickname, profileImage: profileImageUrl };
+    const requestBody = {
+      nickname,
+      profileImage: profileImageUrl,
+    };
 
     try {
-        const response = await fetch(`${window.BACKEND_URL}/api/users/profile`, { 
+      const response = await fetch(`${window.BACKEND_URL}/api/users/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
         credentials: "include",
+        body: JSON.stringify(requestBody),
       });
 
-      if (response.ok) {
-        alert("회원정보 수정 완료!");
-        document.cookie = "profileImageUrl=; Max-Age=0; path=/"; // 쿠키 삭제
-        location.href = "/getUser";
-      } else {
+      if (!response.ok) {
         alert("회원정보 수정 실패. 다시 시도해주세요.");
+        return;
       }
+
+      alert("회원정보 수정 완료!");
+
+      // 쿠키 삭제
+      document.cookie = "profileImageUrl=; Max-Age=0; path=/";
+
+      location.href = "/getUser";
+
     } catch (error) {
       console.error("회원정보 수정 오류:", error);
-      alert("서버 요청 중 오류가 발생했습니다.");
+      alert("서버 요청 중 오류 발생");
     }
   });
 }

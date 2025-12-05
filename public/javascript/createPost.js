@@ -1,4 +1,6 @@
 import { jwtGuard } from "../common/jwt.js";
+import { setupImageUploader } from "/common/imageUploader.js";
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -33,48 +35,15 @@ function validateTitle(title) {
 /* -----------------------------------------------------------
  * ✅ 2. 이미지 업로드 로직 (회원 프로필과 동일)
  * -----------------------------------------------------------*/
-function initImageUpload() {
-  const uploadButton = document.querySelector(".submit");
+setupImageUploader({
+  previewSelector: "#profilePreview",
+  inputSelector: "#fileInput",
+  onUploaded: (url) => {
+    document.cookie = `postImageUrl=${url}; path=/; max-age=${60 * 30}`;
+  }
+});
 
-  // 숨겨진 input 생성
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
 
-  // 버튼 클릭 → 파일 선택창 열기
-  uploadButton.addEventListener("click", () => fileInput.click());
-
-  // 파일 선택 시 자동 업로드
-  fileInput.addEventListener("change", async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-        const response = await fetch(`${window.BACKEND_URL}/api/posts/image`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("이미지 업로드 실패");
-
-      const fileName = await response.text();
-      const uploadedImageUrl = `${window.BACKEND_URL}/uploads/${fileName}`;
-
-      // ✅ 쿠키 저장 (게시물 생성 시 사용)
-      document.cookie = `postImageUrl=${uploadedImageUrl}; path=/`;
-
-      alert("이미지 업로드 완료!");
-    } catch (error) {
-      console.error(error);
-      alert("이미지 업로드 중 오류 발생");
-    }
-  });
-}
 
 /* -----------------------------------------------------------
  * ✅ 3. 게시물 생성 요청
