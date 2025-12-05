@@ -3,11 +3,22 @@ import { setupImageUploader } from "/common/imageUploader.js";
 /* -----------------------------------------------------------
  * 0. DOMContentLoaded 진입점
  * -----------------------------------------------------------*/
-document.addEventListener("DOMContentLoaded", () => {
-  initImageUpload();     // 프로필 이미지 업로드
-  initValidationEvents(); // 이메일/비밀번호/닉네임 입력 검증
-  initSignupButton();     // 회원가입 버튼 클릭 처리
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await jwtGuard();
+
+    document.getElementById("previewImage").addEventListener("click", () => {
+    document.getElementById("profileFile").click();
+    });
+
+    initImageUpload(); 
+    initTitleValidation();
+    initCreateButton();
+  } catch (e) {
+    console.warn("인증 실패:", e.message);
+  }
 });
+
 
 /* -----------------------------------------------------------
  * 1. 공통 이미지 업로더 적용
