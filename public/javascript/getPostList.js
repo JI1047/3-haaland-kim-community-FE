@@ -45,7 +45,7 @@ async function loadPosts() {
 
     loader.textContent = isLast ? "마지막 페이지입니다" : "스크롤하면 더 불러옵니다";
   } catch (err) {
-    console.error("오류:", err);
+    showToast("💥 게시글을 불러오는 중 문제가 생겼어요!", "error");
     loader.textContent = "에러 발생";
   } finally {
     isLoading = false;

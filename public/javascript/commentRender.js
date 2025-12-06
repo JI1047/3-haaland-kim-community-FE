@@ -1,24 +1,14 @@
 /**
  * 댓글 렌더링 및 무한스크롤 전용 메서드 분리
- * commentService를 import해서 사용
- * 댓글 렌더링, 페이지네이션, 스크롤 이벤트 담당
  */
-
 import { loadComments } from "./commentService.js";
+import { showToast } from "../common/toast.js";   // ✅ 추가됨
 
-/**
- * 댓글 페이지네이션 상태 관리 변수
- */
-let commentPage = 0;//시작 페이지
-let commentSize = 5;//한번에 불러올 댓글 수
-let isCommentLoading = false;//로딩중인가?
-let isCommentLast = false;//마지막 페이지인가?
+let commentPage = 0;
+let commentSize = 5;
+let isCommentLoading = false;
+let isCommentLast = false;
 
-/**
- * 댓글 섹션 초기화
- * - 첫 페이지부터 댓글 로드
- * - 무한 스크롤 이벤트 등록
- */
 export function initCommentSection(postId) {
   commentPage = 0;
   isCommentLast = false;
@@ -27,19 +17,15 @@ export function initCommentSection(postId) {
   commentList.innerHTML = "";
   loadAndRenderComments(postId);
 
-  //스크롤 바닥 도달 시 다음 페이지 자동 로드
   window.addEventListener("scroll", () => {
-    if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 50
-    ) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
       loadAndRenderComments(postId);
     }
   });
 }
 
 /**
- * 댓글 데이터 로드 및 렌더링
- * - 서버에서 댓글 페이지 응답데이터dto를 받아와 화면에 렌더링
+ * 댓글 로드 + 렌더링
  */
 async function loadAndRenderComments(postId) {
   if (isCommentLoading || isCommentLast) return;
@@ -55,6 +41,9 @@ async function loadAndRenderComments(postId) {
     commentPage++;
   } catch (err) {
     console.error("댓글 로드 실패:", err);
+
+    // ✅ 에러 메시지 토스트로 출력
+    showToast("🚨 댓글을 불러오는 중 오류가 발생했습니다!", "error");
   } finally {
     loader.style.display = "none";
     isCommentLoading = false;
@@ -63,13 +52,14 @@ async function loadAndRenderComments(postId) {
 
 /**
  * 댓글 렌더링
- * 댓글 데이터를 기반으로 DOM 요소 생성 및 삽입 
  */
 function renderComments(comments) {
   const commentList = document.getElementById("commentList");
+
   comments.forEach((comment) => {
     const div = document.createElement("div");
     div.className = "comment-card";
+
     div.innerHTML = `
       <div class="comment-header">
         <img src="${comment.profileImage || "/images/default-profile.png"}" class="profile-image">
@@ -82,6 +72,7 @@ function renderComments(comments) {
       </div>
       <hr>
     `;
+
     commentList.appendChild(div);
   });
 }
