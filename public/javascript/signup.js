@@ -122,23 +122,24 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     if (!res.ok) {
       const err = await res.json();
 
-      // 🔥 Validation errors 처리
+      // Validation 오류(errors[]가 존재)
       if (err.errors && Array.isArray(err.errors)) {
+
         err.errors.forEach((e) => {
           const target = document.getElementById(`${e.field}Error`);
           if (target) {
-            target.textContent = e.message; // 각 필드 에러 메시지 표시
+            target.textContent = e.message;
           }
         });
-
-        showToast("입력값을 확인해주세요.", "error");
+        showToast(err.message || "입력값이 유효하지 않습니다.", "error");
         return;
       }
 
-      // 🔥 기타 에러 (IllegalArgumentException 등)
+      // 기타 예외 (IllegalArgumentException 등)
       showToast(err.message || "회원가입 실패", "error");
       return;
     }
+
 
 
     showToast("🎉 회원가입 성공!", "success");
