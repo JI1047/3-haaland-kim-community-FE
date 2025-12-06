@@ -46,36 +46,43 @@ function initImageUpload() {
 
   uploadButton.addEventListener("click", () => fileInput.click());
 
-  fileInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+fileInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    try {
-      const LAMBDA_UPLOAD_URL =
-        "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
+  try {
+    const LAMBDA_UPLOAD_URL =
+      "https://dkqpvtnd78.execute-api.ap-northeast-2.amazonaws.com/upload/profile-image";
 
-      const formData = new FormData();
-      formData.append("file", file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-      const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
-        method: "POST",
-        body: formData,
-      });
+    const lambdaRes = await fetch(LAMBDA_UPLOAD_URL, {
+      method: "POST",
+      body: formData,
+    });
 
-      if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
+    if (!lambdaRes.ok) throw new Error("Lambda 업로드 실패");
 
-      const json = await lambdaRes.json();
-      const uploadedImageUrl = json.data.filePath;
+    const json = await lambdaRes.json();
+    const uploadedImageUrl = json.data.filePath;
 
-      document.cookie = `postImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
+    // 🔥 쿠키 저장
+    document.cookie = `postImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
 
-      showToast("📸 이미지 등록 완료!", "success");
+    // 🔥 UI에 파일명 & 미리보기 표시
+    document.getElementById("imagePreviewBox").style.display = "block";
+    document.getElementById("previewImage").src = uploadedImageUrl;
+    document.getElementById("previewFileName").textContent = `📁 ${file.name}`;
 
-    } catch (error) {
-      console.error("이미지 업로드 오류:", error);
-      showToast("🚨 이미지 업로드 중 문제가 발생했어요.", "error");
-    }
-  });
+    showToast("📸 이미지 등록 완료!", "success");
+
+  } catch (error) {
+    console.error("이미지 업로드 오류:", error);
+    showToast("🚨 이미지 업로드 중 문제가 발생했어요.", "error");
+  }
+});
+
 }
 
 /* -----------------------------------------------------------
