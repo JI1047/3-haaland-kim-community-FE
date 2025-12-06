@@ -70,7 +70,7 @@ async function handleUpdatePost(postId) {
   if (check.ok && check.match) {
     location.href = `/updatePost?id=${postId}`;
   } else {
-    showToast(check.message || "수정 권한이 없습니다.", "error");   // 🔥 변경
+    showToast("작성자가 아닙니다.", "error");   // ✅ 강제 고정 메시지
   }
 }
 
@@ -81,7 +81,7 @@ async function handleDeletePost(postId) {
   const check = await checkWriterPermission(postId);
 
   if (!check.ok || !check.match) {
-    showToast(check.message || "삭제 권한이 없습니다.", "error");   // 🔥 변경
+    showToast("작성자가 아닙니다.", "error");   // ✅ 강제 고정 메시지
     return;
   }
 
