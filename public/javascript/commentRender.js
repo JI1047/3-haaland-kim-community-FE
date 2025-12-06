@@ -62,7 +62,7 @@ function renderComments(comments) {
 
     div.innerHTML = `
       <div class="comment-header">
-        <img src="${comment.profileImage || "/images/default-profile.png"}" class="profile-image">
+        <img src="${comment.profileImage || "/user.png"}" class="profile-image">
         <b>${comment.nickname}</b>
       </div>
       <div class="comment-body">${comment.text}</div>
