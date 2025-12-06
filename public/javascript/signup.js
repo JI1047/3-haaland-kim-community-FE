@@ -122,20 +122,33 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     if (!res.ok) {
       const err = await res.json();
 
-      // Validation 오류(errors[]가 존재)
+      // 🔥 Validation 오류(errors[])
       if (err.errors && Array.isArray(err.errors)) {
 
-        err.errors.forEach((e) => {
+        // 🔥 1) 필드 우선순위 정의
+        const priority = ["email", "password", "confirmPassword", "nickname"];
+
+        // 🔥 2) errors[]를 우선순위 기준으로 정렬
+        const sortedErrors = [...err.errors].sort(
+          (a, b) => priority.indexOf(a.field) - priority.indexOf(b.field)
+        );
+
+        // 🔥 3) 최상단 Error(우선순위 가장 높은 필드)의 메시지를 toast로 표시
+        const topErrorMessage = sortedErrors[0]?.message || err.message;
+        showToast(topErrorMessage, "error");
+
+        // 🔥 4) 모든 에러를 해당 input 밑에 표시
+        sortedErrors.forEach((e) => {
           const target = document.getElementById(`${e.field}Error`);
           if (target) {
             target.textContent = e.message;
           }
         });
-        showToast(err.message || "입력값이 유효하지 않습니다.", "error");
+
         return;
       }
 
-      // 기타 예외 (IllegalArgumentException 등)
+      // 🔥 비즈니스 예외 (BusinessException)
       showToast(err.message || "회원가입 실패", "error");
       return;
     }
