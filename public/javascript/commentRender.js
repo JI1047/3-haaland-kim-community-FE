@@ -60,16 +60,23 @@ function renderComments(comments) {
     const div = document.createElement("div");
     div.className = "comment-card";
 
+    // 🔥 owner 여부에 따라 버튼 HTML 생성
+    const actionButtons = comment.owner
+      ? `
+        <div class="comment-actions">
+          <button class="edit-btn" data-id="${comment.commentId}">수정</button>
+          <button class="delete-btn" data-id="${comment.commentId}">삭제</button>
+        </div>
+      `
+      : "";  // owner가 아니면 버튼 없음
+
     div.innerHTML = `
       <div class="comment-header">
         <img src="${comment.profileImage || "/user.png"}" class="profile-image">
         <b>${comment.nickname}</b>
       </div>
       <div class="comment-body">${comment.text}</div>
-      <div class="comment-actions">
-        <button class="edit-btn" data-id="${comment.commentId}">수정</button>
-        <button class="delete-btn" data-id="${comment.commentId}">삭제</button>
-      </div>
+      ${actionButtons}  <!-- 🔥 조건부 렌더링 -->
       <hr>
     `;
 
