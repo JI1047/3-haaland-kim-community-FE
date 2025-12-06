@@ -32,7 +32,7 @@ async function loadPostDetail() {
     });
 
     if (!response.ok) {
-      showToast("⚠️ 로그인이 필요합니다!", "warning");  // 🔥 변경
+      showToast("⚠️ 로그인이 필요합니다!", "warning");
       return;
     }
 
@@ -54,9 +54,13 @@ async function loadPostDetail() {
     const postImg = document.querySelector(".image-box img");
     postImg.src = data.postImage || "/Default-PostImage.jpeg";
 
+    // ⭐️ 좋아요 초기 상태 설정
+    const likeButton = document.getElementById("likeButton");
+    likeButton.textContent = data.hasLiked ? "💔 좋아요 취소" : "❤️ 좋아요";
+
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
-    showToast("🚨 게시물 정보를 불러오지 못했습니다!", "error"); // 🔥 변경
+    showToast("🚨 게시물 정보를 불러오지 못했습니다!", "error");
   }
 }
 
