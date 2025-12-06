@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initCreateButton();
   } catch (e) {
     console.warn("인증 실패:", e.message);
+    showToast("🔐 로그인 세션이 만료되었어요. 다시 로그인해주세요!", "error");
   }
 });
 
@@ -24,7 +25,7 @@ function initTitleValidation() {
 function validateTitle(title) {
   const errorElement = document.getElementById("titleError");
   if (title.length > 26) {
-    errorElement.textContent = "제목은 최대 26자까지 작성 가능합니다.";
+    errorElement.textContent = "❗ 제목은 26자 이하로 작성해주세요.";
     return false;
   }
   errorElement.textContent = "";
@@ -32,7 +33,7 @@ function validateTitle(title) {
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드 (signup.js 방식 + 버튼 클릭)
+ * 2. 이미지 업로드
  * -----------------------------------------------------------*/
 function initImageUpload() {
   const uploadButton = document.querySelector(".submit");
@@ -68,10 +69,11 @@ function initImageUpload() {
 
       document.cookie = `postImageUrl=${uploadedImageUrl}; path=/; max-age=${60 * 30};`;
 
-      showToast("📸 이미지 업로드 완료!");
+      showToast("📸 이미지 등록 완료!", "success");
+
     } catch (error) {
       console.error("이미지 업로드 오류:", error);
-      showToast("🚨 이미지 업로드 실패!");
+      showToast("🚨 이미지 업로드 중 문제가 발생했어요.", "error");
     }
   });
 }
@@ -86,7 +88,7 @@ function initCreateButton() {
     const text = document.getElementById("text").value.trim();
 
     if (!title || !text) {
-      showToast("⚠️ 제목과 내용을 모두 입력해주세요!");
+      showToast("⚠️ 제목과 내용을 모두 입력해주세요!", "warning");
       return;
     }
 
@@ -103,15 +105,16 @@ function initCreateButton() {
       });
 
       if (response.ok) {
-        showToast("🎉 게시물 생성 성공!");
+        showToast("🎉 게시물이 등록됐어요!", "success");
         document.cookie = "postImageUrl=; Max-Age=0; path=/";
-        setTimeout(() => (location.href = "/getPostList"), 800);
+
+        setTimeout(() => (location.href = "/getPostList"), 900);
       } else {
-        showToast("❌ 게시물 생성 실패. 다시 시도해주세요!");
+        showToast("❌ 게시물 등록 실패… 다시 시도해볼까요?", "error");
       }
     } catch (error) {
       console.error("게시물 생성 오류:", error);
-      showToast("🚨 서버 요청 중 오류 발생!");
+      showToast("🚨 서버 오류가 발생했어요. 잠시 후 다시 시도해주세요.", "error");
     }
   });
 }
