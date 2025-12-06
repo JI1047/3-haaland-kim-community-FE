@@ -47,7 +47,7 @@ async function loadPostDetail() {
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드
+ * 2. 이미지 업로드 (수정 페이지 버전 — 미리보기 포함)
  * -----------------------------------------------------------*/
 function initImageUpload() {
   const uploadBtn = document.querySelector(".submit");
@@ -81,13 +81,19 @@ function initImageUpload() {
       const json = await lambdaRes.json();
       const uploadedUrl = json.data.filePath;
 
+      // 🔥 업로드한 이미지 URL 쿠키 저장
       document.cookie = `postImageUrl=${uploadedUrl}; path=/; max-age=${60 * 30}`;
 
-      showToast("📸 이미지 업로드 완료!", "success");   // 🔥 변경
+      // 🔥 UI 미리보기 표시 (create 화면과 동일)
+      document.getElementById("imagePreviewBox").style.display = "block";
+      document.getElementById("previewImage").src = uploadedUrl;
+      document.getElementById("previewFileName").textContent = `📁 ${file.name}`;
+
+      showToast("📸 이미지 업로드 완료!", "success");
 
     } catch (err) {
       console.error("이미지 업로드 오류:", err);
-      showToast("🚨 이미지 업로드 실패", "error");      // 🔥 변경
+      showToast("🚨 이미지 업로드 실패", "error");
     }
   });
 }
