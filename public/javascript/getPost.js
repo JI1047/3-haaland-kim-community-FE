@@ -2,53 +2,42 @@
  * 게시물 상세 페이지 
  * 1) 게시물 상세 조회
  * 2) 댓글 섹션 초기화
- * 3) 전역 이벤트ㅡ 위임 등록
+ * 3) 전역 이벤트 위임 등록
  */
-import { initCommentSection } from "./commentRender.js"; // 댓글 렌더링 및 무한 스크롤 초기화 js 파일 import
-import { initGlobalEventDelegation } from "./commentEvent.js"; // 댓글/게시물 이벤트 위임 로직 js 파일 import
+import { initCommentSection } from "./commentRender.js";
+import { initGlobalEventDelegation } from "./commentEvent.js";
+import { showToast } from "../common/toast.js";  // 🔥 토스트 추가
 
-let postId;//현재 게시물 ID (URL 파라미터로부터 추출)
+let postId;
 
-/**
- * 초기 실행: 페이지 로드 완료 시 호출
- */
+// 초기 실행
 document.addEventListener("DOMContentLoaded", async () => {
-
-  //URL 파라미터에서 postId추출
   const urlParam = new URLSearchParams(window.location.search);
   postId = urlParam.get("id");
 
-  //게시물 상세 데이터 로드
-  await loadPostDetail();
-
-  //댓글 섹션 초기화 (댓글 목록 + 스크롤 이벤트)
-  initCommentSection(postId);
-
-  // 전역 이벤트 위임 등록(댓글 수정/삭세/생성 + 게시물 수정/삭제)
+  await loadPostDetail();     // 게시물 상세 조회
+  initCommentSection(postId); // 댓글 상세 init
   initGlobalEventDelegation(postId, () => initCommentSection(postId));
-  initLikeButton();//좋아요 이벤트 등록
+  initLikeButton();           // 좋아요 이벤트 등록
 });
 
 /**
  * 게시물 상세 조회
- * 1) 서버로무터 게시물 응답dto 데이터를 응답받고
- * 2) 화면에 렌더링
  */
 async function loadPostDetail() {
   try {
-      const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}`, {
+    const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}`, {
       method: "GET",
       credentials: "include",
     });
 
-    //로그인하지않은(인증되지않은)사용자의 접근 차단
     if (!response.ok) {
-      alert("로그인이 필요합니다.");
+      showToast("⚠️ 로그인이 필요합니다!", "warning");  // 🔥 변경
       return;
     }
 
-    //게시물 응답dto로부터 받은 데이터 렌더링
     const data = await response.json();
+
     document.getElementById("title").textContent = data.title;
     document.getElementById("text").textContent = data.text;
     document.getElementById("createdUserNickName").textContent = data.nickname;
@@ -56,17 +45,21 @@ async function loadPostDetail() {
     document.getElementById("likeCount").textContent = data.likeCount;
     document.getElementById("lookCount").textContent = data.lookCount;
     document.getElementById("commentCount").textContent = data.commentCount;
-    // 작성자 프로필 이미지 렌더링
+
+    // 프로필 이미지
     const profileImg = document.querySelector(".profile .left img");
     profileImg.src = data.profileImage || "/user.png";
 
-    // 게시물 이미지 렌더링
+    // 게시물 이미지
     const postImg = document.querySelector(".image-box img");
     postImg.src = data.postImage || "/Default-PostImage.jpeg";
+
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
+    showToast("🚨 게시물 정보를 불러오지 못했습니다!", "error"); // 🔥 변경
   }
 }
+
 /* -----------------------------------------------------------
  * 좋아요 버튼 로직
  * -----------------------------------------------------------*/
@@ -76,30 +69,32 @@ function initLikeButton() {
 
   likeButton.addEventListener("click", async () => {
     try {
-        const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}/like`, {
+      const response = await fetch(`${window.BACKEND_URL}/api/posts/${postId}/like`, {
         method: "POST",
         credentials: "include",
       });
 
       if (!response.ok) {
-        alert("로그인이 필요합니다.");
+        showToast("⚠️ 로그인이 필요합니다!", "warning");  // 🔥 변경
         return;
       }
 
       const result = await response.text();
       let currentCount = parseInt(likeCountEl.textContent || "0");
 
-      // 서버 응답에 따라 UI 변경
       if (result.includes("생성")) {
         likeCountEl.textContent = currentCount + 1;
         likeButton.textContent = "💔 좋아요 취소";
-      } else if (result.includes("제거")) {
+        showToast("❤️ 좋아요!", "success");  // 🔥 성공 토스트
+      } 
+      else if (result.includes("제거")) {
         likeCountEl.textContent = Math.max(0, currentCount - 1);
         likeButton.textContent = "❤️ 좋아요";
+        showToast("💔 좋아요 취소됨!", "success"); // 🔥 성공 토스트
       }
     } catch (error) {
       console.error("좋아요 처리 중 오류:", error);
-      alert("좋아요 요청 중 오류가 발생했습니다.");
+      showToast("🚨 좋아요 요청 실패!", "error");  // 🔥 변경
     }
   });
 }
