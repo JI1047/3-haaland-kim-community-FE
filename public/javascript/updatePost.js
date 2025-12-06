@@ -1,3 +1,5 @@
+import { showToast } from "../common/toast.js";   // 🔥 추가
+
 let postId;
 
 /* -----------------------------------------------------------
@@ -9,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadPostDetail();
   initTitleValidation();
-  initImageUpload();   // 버튼 클릭 방식 이미지 업로드 적용
+  initImageUpload();
   initUpdateButton();
 });
 
@@ -24,7 +26,7 @@ async function loadPostDetail() {
     });
 
     if (!res.ok) {
-      alert("로그인이 필요합니다.");
+      showToast("⚠️ 로그인이 필요합니다!", "warning");   // 🔥 변경
       return;
     }
 
@@ -33,33 +35,31 @@ async function loadPostDetail() {
     document.getElementById("title").value = data.title;
     document.getElementById("text").value = data.text;
 
-    // 기존 게시물 이미지 → 쿠키에 미리 저장 (수정 안 하면 이거 쓸 수 있게)
+    // 기존 게시물 이미지 → 쿠키 저장
     if (data.postImage) {
       document.cookie = `postImageUrl=${data.postImage}; path=/; max-age=${60 * 30}`;
     }
 
   } catch (err) {
     console.error("게시물 불러오기 실패:", err);
+    showToast("🚨 게시물 조회 중 오류 발생", "error");  // 🔥 추가
   }
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드 (버튼 클릭 방식)
+ * 2. 이미지 업로드
  * -----------------------------------------------------------*/
 function initImageUpload() {
   const uploadBtn = document.querySelector(".submit");
 
-  // 숨겨진 파일 input 생성
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
   fileInput.style.display = "none";
   document.body.appendChild(fileInput);
 
-  // 버튼 클릭 → 파일 선택창 열기
   uploadBtn.addEventListener("click", () => fileInput.click());
 
-  // 파일 선택 → Lambda 업로드 진행
   fileInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -81,14 +81,13 @@ function initImageUpload() {
       const json = await lambdaRes.json();
       const uploadedUrl = json.data.filePath;
 
-      // 업로드 성공한 이미지 URL을 쿠키에 저장
       document.cookie = `postImageUrl=${uploadedUrl}; path=/; max-age=${60 * 30}`;
 
-      alert("이미지 업로드 완료!");
+      showToast("📸 이미지 업로드 완료!", "success");   // 🔥 변경
 
     } catch (err) {
       console.error("이미지 업로드 오류:", err);
-      alert("이미지 업로드 실패");
+      showToast("🚨 이미지 업로드 실패", "error");      // 🔥 변경
     }
   });
 }
@@ -135,16 +134,16 @@ function initUpdateButton() {
       });
 
       if (res.ok) {
-        alert("게시글 수정 성공!");
+        showToast("✏️ 게시글 수정 완료!", "success");     // 🔥 변경
         document.cookie = "postImageUrl=; Max-Age=0; path=/";
-        location.href = `/getPost?id=${postId}`;
+        setTimeout(() => (location.href = `/getPost?id=${postId}`), 700);
       } else {
-        alert("게시글 수정 실패. 다시 시도해주세요.");
+        showToast("❌ 수정 실패, 다시 시도해주세요.", "error");  // 🔥 변경
       }
 
     } catch (error) {
       console.error("수정 요청 오류:", error);
-      alert("서버 요청 중 오류 발생");
+      showToast("🚨 서버 오류 발생", "error");  // 🔥 변경
     }
   });
 }

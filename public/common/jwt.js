@@ -1,3 +1,5 @@
+import { showToast } from "../common/toast.js";
+
 /**
  * JWT 검증 및 자동 재발급 (AccessToken 만료 시 RefreshToken으로 복구)
  */
@@ -22,7 +24,6 @@ export async function checkJwt() {
   }
 }
 
-
 /**
  * 보호된 페이지 접근 시 JWT 검증
  */
@@ -30,7 +31,7 @@ export async function jwtGuard(redirectUrl = "/login") {
   const result = await checkJwt();
 
   if (!result.login) {
-    alert("로그인이 필요합니다.");
+    showToast("🔐 로그인이 필요합니다.", "warning");
     setTimeout(() => {
       window.location.href = redirectUrl;
     }, 100);
@@ -39,7 +40,6 @@ export async function jwtGuard(redirectUrl = "/login") {
 
   return result.userId;
 }
-
 
 /**
  * 로그아웃 처리
@@ -50,9 +50,12 @@ export async function logout() {
       method: "PUT",
       credentials: "include"
     });
-    alert("로그아웃 되었습니다.");
+
+    showToast("👋 로그아웃 되었습니다.", "success");
     window.location.href = "/login";
+
   } catch (error) {
     console.error("로그아웃 실패:", error);
+    showToast("🚨 로그아웃 중 오류가 발생했습니다.", "error");
   }
 }

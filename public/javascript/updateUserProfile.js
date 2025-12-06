@@ -1,11 +1,12 @@
 import { jwtGuard } from "../common/jwt.js";
+import { showToast } from "../common/toast.js";   // 🔥 추가
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     await jwtGuard();
     await initUserProfile();
     initNicknameValidation();
-    initImageUpload();   // ← 회원가입 방식 이미지 업로드 로직
+    initImageUpload();
     initUpdateButton();
   } catch (e) {
     console.warn("인증 실패:", e.message);
@@ -34,31 +35,28 @@ async function initUserProfile() {
 
   } catch (err) {
     console.error("유저 정보 불러오기 실패:", err);
+    showToast("🚨 유저 정보를 가져오지 못했습니다.", "error");   // 🔥 추가
   }
 }
 
 /* -----------------------------------------------------------
- * 2. 이미지 업로드 (회원가입 동일 방식)
+ * 2. 이미지 업로드
  * -----------------------------------------------------------*/
 function initImageUpload() {
   const previewImg = document.querySelector(".profile-image img");
 
-  // 숨겨진 파일 input 자동 생성
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
   fileInput.style.display = "none";
   document.body.appendChild(fileInput);
 
-  // 프사 클릭 → 파일 선택
   previewImg.addEventListener("click", () => fileInput.click());
 
-  // 파일 선택 → Lambda 업로드
   fileInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 미리보기 적용
     previewImg.src = URL.createObjectURL(file);
 
     try {
@@ -78,14 +76,13 @@ function initImageUpload() {
       const lambdaJson = await lambdaRes.json();
       const uploadedUrl = lambdaJson.data.filePath;
 
-      // 쿠키 저장
-      document.cookie = `profileImageUrl=${uploadedUrl}; path=/; max-age=${60 * 30}`;
+      document.cookie = `profileImageUrl=${uploadedUrl}; path=/; max-age=${60 * 30};`;
 
-      alert("이미지 업로드 완료!");
+      showToast("📸 이미지 업로드 완료!", "success");   // 🔥 변경
 
     } catch (err) {
       console.error("프로필 업로드 오류:", err);
-      alert("이미지 업로드 실패");
+      showToast("🚨 이미지 업로드 실패", "error");     // 🔥 변경
     }
   });
 }
@@ -144,20 +141,19 @@ function initUpdateButton() {
       });
 
       if (!response.ok) {
-        alert("회원정보 수정 실패. 다시 시도해주세요.");
+        showToast("❌ 회원정보 수정 실패. 다시 시도해주세요.", "error");  // 🔥 변경
         return;
       }
 
-      alert("회원정보 수정 완료!");
+      showToast("✨ 회원정보 수정 완료!", "success");   // 🔥 변경
 
-      // 업로드 이미지 쿠키 삭제
       document.cookie = "profileImageUrl=; Max-Age=0; path=/";
 
-      location.href = "/getUser";
+      setTimeout(() => (location.href = "/getUser"), 700);
 
     } catch (error) {
       console.error("회원정보 수정 오류:", error);
-      alert("서버 요청 중 오류 발생");
+      showToast("🚨 서버 오류가 발생했습니다.", "error");  // 🔥 변경
     }
   });
 }
