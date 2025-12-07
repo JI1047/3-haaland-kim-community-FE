@@ -54,27 +54,36 @@ function renderComments(comments) {
     const div = document.createElement("div");
     div.className = "comment-card";
 
+    const createdAtText = comment.createdAt
+      ? new Date(comment.createdAt).toLocaleString()
+      : "방금 전";
+
     const actionButtons = comment.owner
       ? `
         <div class="comment-actions">
-          <button class="edit-btn" data-id="${comment.commentId}">수정</button>
-          <button class="delete-btn" data-id="${comment.commentId}">삭제</button>
+          <button class="edit-btn" data-id="${comment.commentId}">✏️ 수정</button>
+          <button class="delete-btn" data-id="${comment.commentId}">🗑️ 삭제</button>
         </div>
       `
       : "";
 
     div.innerHTML = `
       <div class="comment-header">
-        <img src="${comment.profileImage || "/user.png"}" class="profile-image">
-        <b>${comment.nickname}</b>
+        <div class="comment-author">
+          <div class="profile-ring">
+            <img src="${comment.profileImage || "/user.png"}" class="profile-image" alt="댓글 작성자">
+          </div>
+          <div>
+            <div class="comment-name">${comment.nickname}</div>
+            <div class="comment-meta">${createdAtText}</div>
+          </div>
+        </div>
+        ${actionButtons}
       </div>
 
       <div class="comment-body" data-id="${comment.commentId}">
-        <span class="comment-text">${comment.text}</span>
+        <p class="comment-text">${comment.text}</p>
       </div>
-
-      ${actionButtons}
-      <hr>
     `;
 
     commentList.appendChild(div);
