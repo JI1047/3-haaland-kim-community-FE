@@ -96,7 +96,7 @@ function initPostActions() {
       if (!confirmed) return;
 
       try {
-        const res = await fetch(`${window.BACKEND_URL}/api/posts/${postId}`, {
+        const res = await fetch(  `${window.BACKEND_URL}/api/posts/${postId}/delete`, {
           method: "DELETE",
           credentials: "include",
         });
