@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../css/getPostList.css">
   <link rel="stylesheet" href="/css/header.css">  
   <script src="/env.js"></script>
-  <script defer src="../javascript/getPostList.js"></script>
+  <script type="module" src="../javascript/getPostList.js"></script>
   <title>시끌벅적 놀이터</title>
   <script type="module" src="/common/header.js"></script>
 
@@ -17,10 +17,32 @@
   <div id="header"></div>
   <hr class="divider">
 
-  <a href="/createPost" class="write-btn" id="writeBtn">게시글 작성</a>
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">COMMUNITY FEED</p>
+      <h1>시끌벅적 놀이터</h1>
+      <p class="hero-sub">새 글을 발견하고, 마음에 드는 이야기에 바로 참여하세요.</p>
+      <div class="hero-actions">
+        <a href="/createPost" class="write-btn" id="writeBtn">+ 게시글 작성</a>
+        <span class="hint">로그인 시 작성 버튼이 활성화됩니다.</span>
+      </div>
+    </section>
 
-  <div id="postList" class="post-list"></div>
+    <section class="board-wrap">
+      <div class="board-head">
+        <div>
+          <p class="board-label">실시간 업데이트</p>
+          <h2>최신 게시글</h2>
+        </div>
+        <div class="board-meta">
+          <span class="pill">무한 스크롤</span>
+          <span class="pill">Like · Comment · View</span>
+        </div>
+      </div>
 
-  <div id="loader" class="loader">불러오는 중...</div>
+      <div id="postList" class="post-list"></div>
+      <div id="loader" class="loader">불러오는 중...</div>
+    </section>
+  </main>
 </body>
 </html>

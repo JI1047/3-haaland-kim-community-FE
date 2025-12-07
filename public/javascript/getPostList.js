@@ -1,3 +1,5 @@
+import { showToast } from "../common/toast.js";
+
 const postList = document.getElementById("postList");
 const loader = document.getElementById("loader");
 
@@ -46,11 +48,29 @@ function renderPosts(posts) {
   posts.forEach(post => {
     const div = document.createElement("div");
     div.className = "post-card";
+
+    const dateText = new Date(post.createdAt).toLocaleString();
+    const excerpt = buildExcerpt(post.text);
+    const like = post.likeCount ?? 0;
+    const comment = post.commentCount ?? 0;
+    const view = post.lookCount ?? 0;
+
     div.innerHTML = `
-      <h3>${post.title}</h3>
-      <div class="post-meta">
-        ${post.nickname} | ${new Date(post.createdAt).toLocaleString()} <br>
-        좋아요수: ${post.likeCount} 댓글 수: ${post.commentCount} 조회 수: ${post.lookCount}
+      <div class="post-top">
+        <h3 class="post-title">${post.title}</h3>
+        <p class="post-excerpt">${excerpt}</p>
+      </div>
+      <div class="post-footer">
+        <div class="post-author">
+          <span>${post.nickname}</span>
+          <span class="meta-dot"></span>
+          <span>${dateText}</span>
+        </div>
+        <div class="post-stats">
+          <span class="stat">❤️ ${like}</span>
+          <span class="stat">💬 ${comment}</span>
+          <span class="stat">👀 ${view}</span>
+        </div>
       </div>
     `;
     div.addEventListener("click", () => {
@@ -58,6 +78,12 @@ function renderPosts(posts) {
     });
     postList.appendChild(div);
   });
+}
+
+function buildExcerpt(text) {
+  if (!text) return "내용 미리보기가 없습니다.";
+  const clean = text.replace(/\s+/g, " ").trim();
+  return clean.length > 60 ? `${clean.slice(0, 60)}…` : clean;
 }
 
 /* -----------------------------------------------------------
