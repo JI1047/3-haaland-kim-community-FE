@@ -46,6 +46,7 @@ async function loadAndRenderComments(postId) {
 
 /**
  * 댓글 렌더링
+ * 
  */
 function renderComments(comments) {
   const commentList = document.getElementById("commentList");
