@@ -5,6 +5,7 @@ body {
               #f6f9ff;
   margin: 0;
   color: #122136;
+  min-height: 100vh;
 }
 
 .divider {
@@ -22,6 +23,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  position: relative;
 }
 
 .hero {
@@ -30,6 +32,15 @@ body {
   border-radius: 22px;
   padding: 28px 32px;
   box-shadow: 0 20px 45px rgba(79, 123, 255, 0.25);
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% 20%, rgba(255,255,255,0.45), transparent 45%);
+  pointer-events: none;
 }
 
 .hero h1 {
@@ -148,12 +159,38 @@ body {
   display: grid;
   grid-template-rows: auto auto auto;
   gap: 8px;
+  position: relative;
+  overflow: hidden;
 }
 
 .post-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 34px rgba(18, 33, 54, 0.12);
   border-color: #c6d8ff;
+}
+
+.post-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(79, 123, 255, 0.05), rgba(123, 199, 255, 0.05));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.post-card:hover::before {
+  opacity: 1;
+}
+
+.post-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4f7bff, #7bc7ff);
+  opacity: 0.8;
 }
 
 .post-title {
@@ -233,4 +270,30 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 22px 20px;
+  }
+
+  .hero h1 {
+    font-size: 1.65rem;
+  }
+
+  .board-wrap {
+    padding: 18px 16px 6px;
+  }
+
+  #postList {
+    grid-template-columns: 1fr;
+  }
+
+  .post-card {
+    padding: 16px;
+  }
+
+  .post-footer {
+    gap: 6px;
+  }
 }
