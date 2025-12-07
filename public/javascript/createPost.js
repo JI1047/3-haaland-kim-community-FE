@@ -3,7 +3,6 @@ import { showToast } from "../common/toast.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await jwtGuard();
     initTitleValidation();
     initImageUpload();
     initCreateButton();

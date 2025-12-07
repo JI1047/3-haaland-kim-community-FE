@@ -3,6 +3,20 @@
   <meta charset="UTF-8">
   <title>시끌벅적 놀이터</title>
 
+  <script>
+    const guard = async () => {
+      const result = await fetch("/api/jwt/validate", { credentials: "include" });
+      const data = await result.json();
+
+      if (!data.login) {
+        // 페이지가 뜨기 전에 바로 이동시키기
+        window.location.href = "/login";
+      }
+    };
+
+    guard();
+  </script>
+
   
   <!-- 페이지 레이아웃 CSS  -->
   <link rel="stylesheet" href="/css/createPost.css">
