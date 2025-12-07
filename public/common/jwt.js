@@ -34,7 +34,7 @@ export async function jwtGuard(redirectUrl = "/login") {
     showToast("🔐 로그인이 필요합니다.", "warning");
     setTimeout(() => {
       window.location.href = redirectUrl;
-    }, 100);
+    }, 1200);
     throw new Error("인증 실패");
   }
 
