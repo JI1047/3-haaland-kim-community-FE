@@ -52,7 +52,19 @@ function initDeleteUserButton() {
 
   deleteButton.addEventListener("click", async () => {
 
-    if (!confirm("정말로 회원 탈퇴하시겠습니까?")) return;
+    const confirmed = await Swal.fire({
+      title: "회원 탈퇴를 진행할까요?",
+      text: "모든 정보가 삭제되며, 이 작업은 되돌릴 수 없습니다.",
+      icon: "warning",
+      confirmButtonText: "네, 탈퇴할게요",
+      cancelButtonText: "취소",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      reverseButtons: true,
+    }).then((res) => res.isConfirmed);
+
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`${window.BACKEND_URL}/api/users`, {
@@ -61,7 +73,13 @@ function initDeleteUserButton() {
       });
 
       if (response.ok) {
-        showToast("회원탈퇴가 완료되었습니다.", "success");
+        await Swal.fire({
+          title: "탈퇴 완료",
+          text: "그동안 이용해주셔서 감사합니다.",
+          icon: "success",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#4f7bff",
+        });
         location.href = "/login";
       } else {
         showToast("회원탈퇴 실패. 다시 시도해주세요.", "error");
