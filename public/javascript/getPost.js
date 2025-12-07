@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initCommentSection(postId); // 댓글 상세 init
   initGlobalEventDelegation(postId, () => initCommentSection(postId));
   initLikeButton();           // 좋아요 이벤트 등록
+  initPostActions();          // 수정/삭제 버튼 로직
 });
 
 /**
@@ -61,6 +62,64 @@ async function loadPostDetail() {
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
     showToast("🚨 게시물 정보를 불러오지 못했습니다!", "error");
+  }
+}
+
+/* -----------------------------------------------------------
+ * 게시글 수정/삭제 버튼
+ * -----------------------------------------------------------*/
+function initPostActions() {
+  const updateBtn = document.getElementById("updatePostButton");
+  const deleteBtn = document.getElementById("deletePostButton");
+
+  if (updateBtn) {
+    updateBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = `/updatePost?id=${postId}`;
+    });
+  }
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const confirmed = await Swal.fire({
+        title: "게시글을 삭제할까요?",
+        text: "삭제 후에는 되돌릴 수 없습니다.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "삭제",
+        cancelButtonText: "취소",
+        confirmButtonColor: "#d33",
+      }).then((result) => result.isConfirmed);
+
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`${window.BACKEND_URL}/api/posts/${postId}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+
+        if (res.status === 401) {
+          showToast("로그인이 필요합니다.", "warning");
+          setTimeout(() => (window.location.href = "/login"), 800);
+          return;
+        }
+
+        if (!res.ok) {
+          const msg = (await res.text()) || "삭제 권한이 없습니다.";
+          showToast(msg, "error");
+          return;
+        }
+
+        showToast("게시글이 삭제되었습니다.", "success");
+        setTimeout(() => (window.location.href = "/getPostList"), 800);
+      } catch (err) {
+        console.error("게시글 삭제 실패:", err);
+        showToast("삭제 중 오류가 발생했습니다.", "error");
+      }
+    });
   }
 }
 
