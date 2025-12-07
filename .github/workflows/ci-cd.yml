@@ -81,16 +81,22 @@ jobs:
     if: github.ref == 'refs/heads/develop'
 
     steps:
+    # (1) NAT 서버에 SSH 접속 준비
+    # - GitHub → NAT 인스턴스 서버 연결
       - name: Prepare SSH Key for NAT (KTB_Cloud.pem)
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          
+   # (2) NAT 서버 → Private FE EC2로 SSH 터널링을 통해 내부 배포 실행
+    # - Private Subnet의 FE EC2는 GitHub Actions에서 직접 접근 불가
+    # - NAT 인스턴스 서버를 중계로 사용해 내부 인스턴스에 접속
+    # - 최신 FE Docker 이미지를 pull 후 docker compose up -d로 재배포
 
-      - name: Deploy DEV via NAT to Private FE EC2
+      - name: Deploy via NAT to Private FE EC2
         run: |
-          TAG=dev
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} \
           "ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} \
-          'cd /home/ubuntu/frontend && IMAGE_TAG=${TAG} docker compose pull && IMAGE_TAG=${TAG} docker compose up -d'"
+          'cd /home/ubuntu/frontend && docker compose pull && docker compose up -d'"
