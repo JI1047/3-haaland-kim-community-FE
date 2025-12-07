@@ -62,6 +62,7 @@ export function initGlobalEventDelegation(postId, refreshComments) {
 }
 
 /**
+ * 
  * 게시물 수정
  */
 async function handleUpdatePost(postId) {
