@@ -8,7 +8,7 @@ name: FE CI/CD
 # main 브랜치에 push되거나 pr 생성될 때 실행
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main" ]
 
@@ -46,11 +46,13 @@ jobs:
     # Docker 이미지 빌드 & Docker Hub로 Push
       - name: Build and Push Docker Image
         run: |
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/board-fe:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/board-fe:latest
+          TAG=$([[ "$GITHUB_REF" == "refs/heads/develop" ]] && echo "dev" || echo "latest")
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/board-fe:${TAG} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/board-fe:${TAG}
   deploy:
     needs: build-and-push-image
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
     # (1) NAT 서버에 SSH 접속 준비
