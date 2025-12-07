@@ -74,3 +74,23 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} \
           "ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} \
           'cd /home/ubuntu/frontend && docker compose pull && docker compose up -d'"
+
+  deploy-dev:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Prepare SSH Key for NAT (KTB_Cloud.pem)
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy DEV via NAT to Private FE EC2
+        run: |
+          TAG=dev
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_HOST }} \
+          "ssh -i /home/ubuntu/KTB_Cloud.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PRIVATE_FE_IP }} \
+          'cd /home/ubuntu/frontend && IMAGE_TAG=${TAG} docker compose pull && IMAGE_TAG=${TAG} docker compose up -d'"
