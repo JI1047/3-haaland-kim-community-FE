@@ -114,6 +114,12 @@ async function handleCreateComment(postId, refreshComments) {
 
   const res = await createComment(postId, text);
 
+  if (res.status === 401) {
+    showToast("🔐 로그인이 필요합니다!", "warning");
+    setTimeout(() => window.location.href = "/login", 1200);
+    return;
+  }
+
   if (res.ok) {
     showToast("댓글이 등록되었습니다!", "success");  // 🔥 성공
     document.getElementById("commentInput").value = "";
