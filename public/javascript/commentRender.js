@@ -71,13 +71,6 @@ function renderComments(comments) {
 
       <div class="comment-body" data-id="${comment.commentId}">
         <span class="comment-text">${comment.text}</span>
-
-        <!-- 🔥 수정 입력창 (기본 숨김) -->
-        <textarea class="edit-area" style="display:none;">${comment.text}</textarea>
-        <div class="edit-actions" style="display:none;">
-          <button class="save-edit-btn" data-id="${comment.commentId}">저장</button>
-          <button class="cancel-edit-btn">취소</button>
-        </div>
       </div>
 
       ${actionButtons}

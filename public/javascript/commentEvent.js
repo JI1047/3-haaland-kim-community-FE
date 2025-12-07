@@ -1,5 +1,4 @@
 import { createComment, updateComment, deleteComment } from "./commentService.js";
-import { checkWriterPermission } from "./checkWriter.js";
 import { showToast } from "../common/toast.js";
 
 const BASE_URL = window.BACKEND_URL || "http://localhost:8080";
@@ -16,55 +15,45 @@ export function initGlobalEventDelegation(postId, refreshComments) {
       return handleCreateComment(postId, refreshComments);
     }
 
-
     /** ---------------------------
-     * 댓글 수정 버튼 누름 → 수정 모드 ON
+     * 댓글 수정
      ----------------------------*/
     if (target.classList.contains("edit-btn")) {
       const card = target.closest(".comment-card");
-      toggleEditMode(card, true);
-      return;
-    }
-
-    /** ---------------------------
-     * 수정 취소
-     ----------------------------*/
-    if (target.classList.contains("cancel-edit-btn")) {
-      const card = target.closest(".comment-card");
-      toggleEditMode(card, false);
-      return;
-    }
-
-    /** ---------------------------
-     * 수정 저장
-     ----------------------------*/
-    if (target.classList.contains("save-edit-btn")) {
-      const card = target.closest(".comment-card");
       const commentId = target.dataset.id;
+      const originalText = card.querySelector(".comment-text").textContent.trim();
 
-      const newText = card.querySelector(".edit-area").value.trim();
+      const { value: newText } = await Swal.fire({
+        title: "댓글 수정",
+        input: "textarea",
+        inputValue: originalText,
+        showCancelButton: true,
+        confirmButtonText: "수정",
+        cancelButtonText: "취소",
+        inputValidator: (value) => {
+          if (!value.trim()) {
+            return "댓글 내용을 입력해주세요!";
+          }
+        },
+      });
 
-      if (!newText) {
-        showToast("댓글 내용을 입력해주세요!", "warning");
-        return;
+      if (newText) {
+        const result = await updateComment(postId, commentId, newText);
+
+        if (result.status === 401) {
+          showToast("로그인이 필요합니다!", "error");
+          setTimeout(() => (window.location.href = "/login"), 1000);
+          return;
+        }
+
+        if (!result.ok) {
+          showToast(result.message || "수정 권한이 없습니다.", "error");
+          return;
+        }
+
+        showToast("댓글이 수정되었습니다!", "success");
+        refreshComments();
       }
-
-      const result = await updateComment(postId, commentId, newText);
-
-      if (result.status === 401) {
-        showToast("로그인이 필요합니다!", "error");
-        setTimeout(() => (window.location.href = "/login"), 1000);
-        return;
-      }
-
-      if (!result.ok) {
-        showToast(result.message || "수정 권한이 없습니다.", "error");
-        return;
-      }
-
-      showToast("댓글이 수정되었습니다!", "success");
-      refreshComments();
-      return;
     }
 
 
@@ -74,23 +63,34 @@ export function initGlobalEventDelegation(postId, refreshComments) {
     if (target.classList.contains("delete-btn")) {
       const commentId = target.dataset.id;
 
-      if (!confirm("정말 삭제하시겠습니까?")) return;
+      const { isConfirmed } = await Swal.fire({
+        title: "정말 삭제하시겠습니까?",
+        text: "삭제된 댓글은 복구할 수 없습니다.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "삭제",
+        cancelButtonText: "취소",
+      });
 
-      const result = await deleteComment(postId, commentId);
+      if (isConfirmed) {
+        const result = await deleteComment(postId, commentId);
 
-      if (result.status === 401) {
-        showToast("로그인이 필요합니다!", "error");
-        setTimeout(() => (window.location.href = "/login"), 1000);
-        return;
+        if (result.status === 401) {
+          showToast("로그인이 필요합니다!", "error");
+          setTimeout(() => (window.location.href = "/login"), 1000);
+          return;
+        }
+
+        if (!result.ok) {
+          showToast(result.message || "삭제 권한이 없습니다.", "error");
+          return;
+        }
+
+        showToast("댓글이 삭제되었습니다!", "success");
+        refreshComments();
       }
-
-      if (!result.ok) {
-        showToast(result.message || "삭제 권한이 없습니다.", "error");
-        return;
-      }
-
-      showToast("댓글이 삭제되었습니다!", "success");
-      refreshComments();
     }
   });
 }
@@ -121,13 +121,4 @@ async function handleCreateComment(postId, refreshComments) {
   showToast("댓글이 등록되었습니다!", "success");
   document.getElementById("commentInput").value = "";
   refreshComments();
-}
-
-/**
- * 수정 모드 토글
- */
-function toggleEditMode(card, isEdit) {
-  card.querySelector(".comment-text").style.display = isEdit ? "none" : "block";
-  card.querySelector(".edit-area").style.display = isEdit ? "block" : "none";
-  card.querySelector(".edit-actions").style.display = isEdit ? "block" : "none";
 }
