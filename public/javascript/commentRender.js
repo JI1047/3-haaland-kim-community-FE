@@ -2,7 +2,7 @@
  * 댓글 렌더링 및 무한스크롤 전용 메서드 분리
  */
 import { loadComments } from "./commentService.js";
-import { showToast } from "../common/toast.js";   // ✅ 추가됨
+import { showToast } from "../common/toast.js";
 
 let commentPage = 0;
 let commentSize = 5;
@@ -24,9 +24,6 @@ export function initCommentSection(postId) {
   });
 }
 
-/**
- * 댓글 로드 + 렌더링
- */
 async function loadAndRenderComments(postId) {
   if (isCommentLoading || isCommentLast) return;
   isCommentLoading = true;
@@ -40,9 +37,6 @@ async function loadAndRenderComments(postId) {
     isCommentLast = data.last;
     commentPage++;
   } catch (err) {
-    console.error("댓글 로드 실패:", err);
-
-    // ✅ 에러 메시지 토스트로 출력
     showToast("🚨 댓글을 불러오는 중 오류가 발생했습니다!", "error");
   } finally {
     loader.style.display = "none";
@@ -60,7 +54,6 @@ function renderComments(comments) {
     const div = document.createElement("div");
     div.className = "comment-card";
 
-    // 🔥 owner 여부에 따라 버튼 HTML 생성
     const actionButtons = comment.owner
       ? `
         <div class="comment-actions">
@@ -68,15 +61,26 @@ function renderComments(comments) {
           <button class="delete-btn" data-id="${comment.commentId}">삭제</button>
         </div>
       `
-      : "";  // owner가 아니면 버튼 없음
+      : "";
 
     div.innerHTML = `
       <div class="comment-header">
         <img src="${comment.profileImage || "/user.png"}" class="profile-image">
         <b>${comment.nickname}</b>
       </div>
-      <div class="comment-body">${comment.text}</div>
-      ${actionButtons}  <!-- 🔥 조건부 렌더링 -->
+
+      <div class="comment-body" data-id="${comment.commentId}">
+        <span class="comment-text">${comment.text}</span>
+
+        <!-- 🔥 수정 입력창 (기본 숨김) -->
+        <textarea class="edit-area" style="display:none;">${comment.text}</textarea>
+        <div class="edit-actions" style="display:none;">
+          <button class="save-edit-btn" data-id="${comment.commentId}">저장</button>
+          <button class="cancel-edit-btn">취소</button>
+        </div>
+      </div>
+
+      ${actionButtons}
       <hr>
     `;
 
