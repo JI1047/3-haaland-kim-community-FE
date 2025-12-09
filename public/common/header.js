@@ -19,9 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const session = await checkJwt();
 
     // ✅ 버튼 표시 제어
+    const userLink = document.querySelector(".user-link");
     document.getElementById("login").hidden = session.login;
     document.getElementById("signup").hidden = session.login;
     document.getElementById("logout").hidden = !session.login;
+    userLink.style.display = "flex"; // 최종 상태만 노출
 
     // ✅ 프로필 이미지 교체
     const headerImg = document.querySelector(".header img");

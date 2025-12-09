@@ -38,7 +38,7 @@
 .user-link {
   position: absolute;
   right: 10px; /* 🔥 완전히 오른쪽 구석 */
-  display: flex;
+  display: none; /* 데이터 로드 전까지 숨김 */
   gap: 12px;
 }
 
