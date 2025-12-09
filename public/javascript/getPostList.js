@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let page = 0;
-let size = 5;
+let size = 4;
 let isLoading = false;
 let isLast = false;
 let pageShown = false;
