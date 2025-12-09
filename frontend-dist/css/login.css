@@ -1,0 +1,69 @@
+/* 전체 */
+body {
+  font-family: "Noto Sans KR", sans-serif;
+  background: linear-gradient(135deg, #d7e8ff 0%, #f5f9ff 100%);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1e1e1e;
+}
+
+
+/* 입력박스 */
+.input-box {
+  text-align: left;
+  width: 400px;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;  
+  gap: 6px;
+}
+
+.input-box input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+}
+
+#loginButton {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#loginButton:hover {
+  background-color: #005fcc;
+}
+
+/* 오류 메시지 */
+.errorMessage {
+  color: red;
+  font-size: 0.85rem;
+  height: 16px;
+}
+
+/* 링크 영역 */
+.link-box {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.signup {
+  display: inline-block;
+  margin-right: 10px;
+  color: #0a6cff;
+  text-decoration: none;
+}
+
+.signup:hover {
+  text-decoration: underline;
+}

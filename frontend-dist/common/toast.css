@@ -1,0 +1,52 @@
+#toast-container {
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  width: auto !important;
+  display: block !important;
+
+  align-self: auto !important;
+  flex: none !important;
+
+  z-index: 999999 !important;
+  pointer-events: none;
+}
+
+
+
+/* 공통 스타일 */
+.toast {
+  padding: 14px 20px;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  margin-top: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: fadeInOut 3s ease forwards;
+}
+
+/* 성공 - 파랑 */
+.toast-success {
+  background-color: #3399ff;
+}
+
+/* 실패 - 빨강 */
+.toast-error {
+  background-color: #ff4d4d;
+}
+
+/* 경고 - 노랑 */
+.toast-warning {
+  background-color: #ffcc00;
+  color: black;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  15% { opacity: 1; transform: translateY(0px); }
+  85% { opacity: 1; transform: translateY(0px); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}

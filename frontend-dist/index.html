@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./common/toast.css">
+  <script type="module" src="./common/toast.js"></script>
+  <link rel="stylesheet" href="./css/getPostList.css">
+  <link rel="stylesheet" href="./css/header.css">  
+  <script src="./env.js"></script>
+  <script defer src="./javascript/getPostList.js"></script>
+  <title>시끌벅적 놀이터</title>
+  <script type="module" src="./common/header.js"></script>
+
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div id="header"></div>
+  <div id="postPage" style="display:none;">
+    <hr class="divider">
+    <div class="actions">
+      <a href="./html/createPost.html" class="write-btn" id="writeBtn">게시글 작성</a>
+    </div>
+    <div id="postList" class="post-list"></div>
+    <div id="loader" class="loader" style="display:none;">불러오는 중...</div>
+  </div>
+</body>
+</html>
