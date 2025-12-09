@@ -15,6 +15,7 @@ let pageShown = false;
 
 /* -----------------------------------------------------------
  * 1. 로그인 상태에 따라 "게시글 작성" 버튼 표시/숨김
+
  * -----------------------------------------------------------*/
 async function checkLoginState() {
   const btn = document.querySelector(".write-btn");
