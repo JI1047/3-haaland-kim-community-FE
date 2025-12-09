@@ -121,6 +121,10 @@ body {
   color: #333;
 }
 
+.profile .right {
+  display: none; /* 데이터 로드 전에는 숨김 */
+}
+
 .profile .right a {
   text-decoration: none;
   background-color: #007bff;

@@ -136,7 +136,7 @@ function togglePostActions(owner) {
   const actionBox = document.querySelector(".profile .right");
   if (!actionBox) return;
 
-  actionBox.style.display = owner ? "" : "none";
+  actionBox.style.display = owner ? "flex" : "none";
 }
 
 /* -----------------------------------------------------------
