@@ -10,6 +10,7 @@ import { initGlobalEventDelegation } from "./commentEvent.js";
 import { showToast } from "../common/toast.js";  // 🔥 토스트 추가
 
 let postId;
+let isOwner = false;
 
 // 초기 실행
 document.addEventListener("DOMContentLoaded", async () => {
@@ -60,6 +61,10 @@ async function loadPostDetail() {
     const likeButton = document.getElementById("likeButton");
     likeButton.textContent = data.hasLiked ? "💔 좋아요 취소" : "❤️ 좋아요";
 
+    // 🔒 작성자만 수정/삭제 노출
+    isOwner = Boolean(data.owner);
+    togglePostActions(isOwner);
+
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
     showToast("🚨 게시물 정보를 불러오지 못했습니다!", "error");
@@ -70,6 +75,8 @@ async function loadPostDetail() {
  * 게시글 수정/삭제 버튼
  * -----------------------------------------------------------*/
 function initPostActions() {
+  if (!isOwner) return; // 작성자가 아니면 버튼 이벤트 자체를 막음
+
   const updateBtn = document.getElementById("updatePostButton");
   const deleteBtn = document.getElementById("deletePostButton");
 
@@ -122,6 +129,14 @@ function initPostActions() {
       }
     });
   }
+}
+
+// 소유자 여부에 따라 수정/삭제 버튼 영역을 토글
+function togglePostActions(owner) {
+  const actionBox = document.querySelector(".profile .right");
+  if (!actionBox) return;
+
+  actionBox.style.display = owner ? "" : "none";
 }
 
 /* -----------------------------------------------------------
