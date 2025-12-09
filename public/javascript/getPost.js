@@ -65,6 +65,10 @@ async function loadPostDetail() {
     isOwner = Boolean(data.owner);
     togglePostActions(isOwner);
 
+    // 데이터 로드 완료 후 본문 표시
+    const postContent = document.getElementById("postContent");
+    if (postContent) postContent.style.display = "block";
+
   } catch (error) {
     console.error("게시물 조회 중 오류:", error);
     showToast("🚨 게시물 정보를 불러오지 못했습니다!", "error");

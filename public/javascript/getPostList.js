@@ -1,5 +1,6 @@
 const postList = document.getElementById("postList");
 const loader = document.getElementById("loader");
+const postPage = document.getElementById("postPage");
 
 // 페이지 로드시 로그인 여부 체크
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,6 +11,7 @@ let page = 0;
 let size = 5;
 let isLoading = false;
 let isLast = false;
+let pageShown = false;
 
 /* -----------------------------------------------------------
  * 1. 로그인 상태에 따라 "게시글 작성" 버튼 표시/숨김
@@ -85,6 +87,10 @@ async function loadPosts() {
     loader.textContent = "에러 발생";
 
   } finally {
+    if (!pageShown && postPage) {
+      postPage.style.display = "block"; // 첫 로드 후에만 전체 페이지 노출
+      pageShown = true;
+    }
     isLoading = false;
   }
 }
