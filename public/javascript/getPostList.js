@@ -12,6 +12,7 @@ let size = 4;
 let isLoading = false;
 let isLast = false;
 let pageShown = false;
+const MIN_LOADING_MS = 400; // 로딩 체감을 위한 최소 표시 시간
 
 /* -----------------------------------------------------------
  * 1. 로그인 상태에 따라 "게시글 작성" 버튼 표시/숨김
@@ -72,7 +73,9 @@ async function loadPosts() {
   loader.style.display = "block";
 
   try {
-    const res = await fetch(`${window.BACKEND_URL}/api/posts/list?page=${page}&size=${size}`);
+    const fetchPromise = fetch(`${window.BACKEND_URL}/api/posts/list?page=${page}&size=${size}`);
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, MIN_LOADING_MS));
+    const res = await Promise.all([fetchPromise, delayPromise]).then(([r]) => r);
     if (!res.ok) throw new Error("게시글 로드 실패");
 
     const data = await res.json();
