@@ -150,4 +150,24 @@ body {
   transform: translateY(-2px);
 }
 
+/* ✅ 게시물 수정 버튼 (수정 페이지에서 사용) */
+#updateButton {
+  align-self: center;
+  width: 200px;
+  margin-top: 15px;
+  padding: 12px 0;
+  background-color: #007bff;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 3px 10px rgba(0,123,255,0.3);
+}
+
+#updateButton:hover {
+  background-color: #005fcc;
+  transform: translateY(-2px);
+}
 
