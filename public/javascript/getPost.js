@@ -4,6 +4,7 @@
  * 2) 댓글 섹션 초기화
  * 3) 전역 이벤트 위임 등록
  * 
+ * 
  */
 import { initCommentSection } from "./commentRender.js";
 import { initGlobalEventDelegation } from "./commentEvent.js";
