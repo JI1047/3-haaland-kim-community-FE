@@ -22,7 +22,7 @@ async function checkLoginState() {
   const btn = document.querySelector(".write-btn");
 
   try {
-    const res = await fetch("/api/jwt/validate", {
+    const res = await fetch(`${window.BACKEND_URL}/api/jwt/validate`, {
       method: "GET",
       credentials: "include"
     });

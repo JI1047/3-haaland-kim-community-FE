@@ -16,7 +16,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080";
 // ---------------------------------------------------------
 app.get("/env.js", (req, res) => {
   res.type("application/javascript");
-  res.send(`window.BACKEND_URL = "https://haaland-community.site";`);
+  res.send(`window.BACKEND_URL = "${BACKEND_URL}";`);
 });
 
 // ---------------------------------------------------------
@@ -45,7 +45,7 @@ app.get("/login", (_, res) =>
 
 // ✅ 백엔드 thymeleaf 페이지로 리다이렉트
 app.get("/signup", (_, res) => {
-  res.redirect("https://haaland-community.site/api/terms/signup");
+  res.redirect(`${BACKEND_URL}/api/terms/signup`);
 });
 
 

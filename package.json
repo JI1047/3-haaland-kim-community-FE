@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/JI1047/3-haaland-kim-community-FE#readme",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "sweetalert2": "^11.26.4"
